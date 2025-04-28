@@ -12,6 +12,7 @@ const SignIn = () => {
 
   const onSignInClick = async () => {
     const ret = await sign_in(userId, pass);
+    console.log(ret);
     if (ret && ret.token) {
       setUserInfo({
         id: ret.user_id,

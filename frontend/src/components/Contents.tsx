@@ -1,7 +1,11 @@
 import PostList from "./PostList";
 
 const Contents = () => {
-  return <PostList />;
+  return (
+    <>
+      <PostList />
+    </>
+  );
 };
 
 export default Contents;

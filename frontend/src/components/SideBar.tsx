@@ -1,14 +1,35 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
+import { getList, post } from "../api/Post";
+import { PostListContext, PostType } from "../providers/PostListProvider";
 
 const SideBar = () => {
   const [msg, setMsg] = useState("");
 
   const { userInfo } = useContext(UserContext);
+  const { setPostList } = useContext(PostListContext);
+
+  const getPostList = async () => {
+    const posts = await getList(userInfo.token);
+    console.log(posts);
+    let postList: Array<PostType> = [];
+    if (posts) {
+      console.log(posts);
+      posts.forEach((post: any) => {
+        postList.push({
+          id: post.id,
+          user_name: post.user_name,
+          content: post.content,
+          created_at: new Date(post.created_at).toLocaleString(),
+        });
+      });
+    }
+
+    setPostList(postList);
+  };
 
   const onSendClick = () => {
-    console.log("onSendClick");
-    console.log(userInfo);
+    post(String(userInfo.id), String(userInfo.token), msg);
   };
 
   return (

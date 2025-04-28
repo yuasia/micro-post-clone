@@ -45,7 +45,7 @@ export class PostService {
     }
 
     const qb = await this.prisma.microPost.findMany({
-      skip: start,
+      skip: 0,
       take: nr_records,
       orderBy: {
         created_at: 'desc',

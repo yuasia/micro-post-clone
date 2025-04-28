@@ -3,24 +3,19 @@ import styled from "styled-components";
 import SignIn from "./pages/SignIn";
 import { Route, Routes } from "react-router-dom";
 import { UserProvider } from "./providers/UserProvider";
+import Main from "./pages/Main";
 
 function App() {
   return (
-    <MainDiv>
+    <div className="App">
       <UserProvider>
         <Routes>
           <Route path="/" element={<SignIn />} />
-          {/* <Route path="/" element={<Main />} /> */}
+          <Route path="/main" element={<Main />} />
         </Routes>
       </UserProvider>
-    </MainDiv>
+    </div>
   );
 }
 
 export default App;
-
-const MainDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;

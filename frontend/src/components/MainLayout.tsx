@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import Header from "./components/Header";
-import SideBar from "./components/SideBar";
-import Contents from "./components/Contents";
+import Header from "../components/Header";
+import SideBar from "../components/SideBar";
+import Contents from "../components/Contents";
 
-const Layout = () => {
+const MainLayout = () => {
   return (
     <>
       <SHeader>
@@ -23,7 +23,7 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default MainLayout;
 
 const SHeader = styled.div`
   width: 100%;

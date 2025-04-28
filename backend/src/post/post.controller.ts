@@ -16,9 +16,11 @@ export class PostController {
   @Get()
   async getList(
     @Query('token') token: string,
-    @Query('start') start: number,
-    @Query('records') nr_records: number,
+    @Query('start') start: string,
+    @Query('records') nr_records: string,
   ) {
-    return await this.postService.getList(token, start, nr_records);
+    const numRecords = parseInt(nr_records, 10);
+    const startIndex = parseInt(start, 10);
+    return await this.postService.getList(token, startIndex, numRecords);
   }
 }
