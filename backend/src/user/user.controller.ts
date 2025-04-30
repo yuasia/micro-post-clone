@@ -15,7 +15,8 @@ export class UserController {
   }
 
   @Get(':id')
-  async getUser(@Param('id') id: number, @Query('token') token: string) {
-    return await this.userService.getUser(token, id);
+  async getUser(@Param('id') id: string, @Query('token') token: string) {
+    const user_id = parseInt(id, 10);
+    return await this.userService.getUser(token, user_id);
   }
 }

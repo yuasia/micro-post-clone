@@ -1,6 +1,7 @@
+import styled from "styled-components";
+import { getList, post } from "../api/Post";
 import { useContext, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
-import { getList, post } from "../api/Post";
 import { PostListContext, PostType } from "../providers/PostListProvider";
 
 const SideBar = () => {
@@ -28,26 +29,88 @@ const SideBar = () => {
     setPostList(postList);
   };
 
-  const onSendClick = () => {
+  const onSendClick = async () => {
     post(String(userInfo.id), String(userInfo.token), msg);
+    await getPostList();
+    setMsg("");
   };
 
   return (
-    <div>
-      <div>hoge</div>
-      <div>hoge@example.com</div>
-      <div>
-        <textarea
+    <SPostForm>
+      <SPostTitle>新規投稿</SPostTitle>
+      <SFormGroup>
+        <STextArea
           rows={4}
           value={msg}
           onChange={(e) => setMsg(e.target.value)}
-        ></textarea>
-      </div>
-      <div>
-        <button onClick={onSendClick}>送信</button>
-      </div>
-    </div>
+        ></STextArea>
+        <SButton onClick={onSendClick}>送信</SButton>
+      </SFormGroup>
+    </SPostForm>
   );
 };
 
 export default SideBar;
+
+const SPostForm = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 24px;
+`;
+
+const SPostTitle = styled.div`
+  font-size: 22px;
+  color: #444444;
+  margin-bottom: 20px;
+  font-weight: bold;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    background-color: #444444;
+    margin: 8px auto 0;
+    border-radius: 2px;
+  }
+`;
+
+const SFormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+`;
+
+const STextArea = styled.textarea`
+  width: 80%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 14px;
+  min-height: 500px;
+
+  &:focus {
+    border-color: #444444;
+    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0, 2);
+  }
+`;
+
+const SButton = styled.button`
+  width: 30%;
+  padding: 10px 20px;
+  background: #555555;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background: #222222;
+  }
+`;

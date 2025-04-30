@@ -28,7 +28,7 @@ export class PostService {
     await this.prisma.microPost.create({ data: record });
   }
 
-  async getList(token: string, start: number = 0, nr_records: number = 1) {
+  async getList(token: string, start: number, nr_records: number) {
     const now = new Date();
 
     const auth = await this.prisma.auth.findUnique({
@@ -45,7 +45,7 @@ export class PostService {
     }
 
     const qb = await this.prisma.microPost.findMany({
-      skip: 0,
+      skip: start,
       take: nr_records,
       orderBy: {
         created_at: 'desc',

@@ -7,16 +7,16 @@ const MainLayout = () => {
   return (
     <>
       <SHeader>
-        <Header></Header>
+        <Header />
       </SHeader>
 
       <SBody>
         <SSideBar>
-          <SideBar></SideBar>
+          <SideBar />
         </SSideBar>
 
         <SContents>
-          <Contents></Contents>
+          <Contents />
         </SContents>
       </SBody>
     </>
@@ -27,26 +27,23 @@ export default MainLayout;
 
 const SHeader = styled.div`
   width: 100%;
-  height: 32px;
-  border: 2px solid red;
+  height: 70px;
+  box-shadow: 0px 4px 4px #aaaaaa;
 `;
 
 const SBody = styled.div`
   width: 100%;
-  height: calc(100vh - 32px);
-  border: 2px solid green;
+  height: calc(100vh - 70px);
   display: flex;
-  flex-direction: row;
 `;
 
 const SSideBar = styled.div`
-  border: 2px solid blue;
-  width: 30%;
+  border-right: 1px solid #aaaaaa;
+  width: 50%;
   height: 100%;
 `;
 
 const SContents = styled.div`
-  border: 2px solid #ff00ff;
   width: 100%;
   height: 100%;
 `;

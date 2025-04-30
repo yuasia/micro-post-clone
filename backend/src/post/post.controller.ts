@@ -19,8 +19,8 @@ export class PostController {
     @Query('start') start: string,
     @Query('records') nr_records: string,
   ) {
-    const numRecords = parseInt(nr_records, 10);
-    const startIndex = parseInt(start, 10);
+    const numRecords = parseInt(nr_records, 10) || 1;
+    const startIndex = parseInt(start, 10) || 0;
     return await this.postService.getList(token, startIndex, numRecords);
   }
 }
