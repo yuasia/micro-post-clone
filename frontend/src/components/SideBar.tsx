@@ -106,7 +106,7 @@ const STextArea = styled.textarea`
 const SButton = styled.button`
   width: 30%;
   padding: 10px 20px;
-  background: #555555;
+  background: #444444;
   color: white;
   font-weight: bold;
   font-size: 14px;
@@ -116,6 +116,8 @@ const SButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background: #222222;
+    background: white;
+    color: #444444;
+    border: 1px solid #444444;
   }
 `;

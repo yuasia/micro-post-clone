@@ -1,5 +1,5 @@
 import Post from "./Post";
-import { getList } from "../api/Post";
+import { deletePost, getList, getPostCount } from "../api/Post";
 import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
@@ -7,6 +7,8 @@ import { PostListContext, PostType } from "../providers/PostListProvider";
 import { PageContext } from "../providers/pageProvider";
 
 const PostList = () => {
+  const [totalPosts, setTotalPosts] = useState(0);
+
   const postsPerPage = 10;
 
   const { postList, setPostList } = useContext(PostListContext);
@@ -16,6 +18,8 @@ const PostList = () => {
   const getPostList = async () => {
     const start = (page - 1) * postsPerPage;
     const posts = await getList(userInfo.token, start, postsPerPage);
+    const postCount = await getPostCount(userInfo.token);
+    setTotalPosts(postCount.count);
 
     let postList: Array<PostType> = [];
     if (posts) {
@@ -32,15 +36,26 @@ const PostList = () => {
     }
   };
 
+  const handleDelete = async (id: number) => {
+    const confirm = window.confirm("本当にこの投稿を削除しましすか？");
+    if (confirm) {
+      await deletePost(id, userInfo.token);
+      setPostList(postList.filter((post) => post.id !== id));
+      setTotalPosts(totalPosts - 1);
+    }
+  };
+
   useEffect(() => {
     getPostList();
   }, [page]);
+
+  console.log("postListCount", totalPosts);
 
   return (
     <SPostList>
       <SPostTitle>Post List</SPostTitle>
       {postList.map((post: PostType) => (
-        <Post key={post.id} post={post} />
+        <Post key={post.id} post={post} onDelete={handleDelete} />
       ))}
       <SBtnGroup>
         <SPaginationButton
@@ -49,7 +64,10 @@ const PostList = () => {
         >
           前へ
         </SPaginationButton>
-        <SPaginationButton onClick={() => setPage(page + 1)}>
+        <SPaginationButton
+          disabled={page * postsPerPage >= totalPosts}
+          onClick={() => setPage(page + 1)}
+        >
           後へ
         </SPaginationButton>
       </SBtnGroup>
@@ -91,7 +109,7 @@ const SBtnGroup = styled.div`
 `;
 
 const SPaginationButton = styled.button`
-  background: #555555;
+  background: #444444;
   color: white;
   border: none;
   border-radius: 16px;
@@ -107,6 +125,8 @@ const SPaginationButton = styled.button`
   }
 
   &:hover:not(:disabled) {
-    background: #333333;
+    background: white;
+    color: #444444;
+    border: 1px solid #444444;
   }
 `;

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 
 @Controller('post')
@@ -22,5 +30,16 @@ export class PostController {
     const numRecords = parseInt(nr_records, 10) || 1;
     const startIndex = parseInt(start, 10) || 0;
     return await this.postService.getList(token, startIndex, numRecords);
+  }
+
+  @Get('count')
+  async getPostCount(@Query('token') token: string) {
+    const count = await this.postService.getPostCount(token);
+    return { count };
+  }
+
+  @Delete(':id')
+  async deletePost(@Param('id') id: string, @Query('token') token: string) {
+    return await this.postService.deletePost(id, token);
   }
 }

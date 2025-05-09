@@ -125,6 +125,8 @@ const SLoginButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #222222;
+    background-color: white;
+    color: #444444;
+    border: 1px solid #444444;
   }
 `;

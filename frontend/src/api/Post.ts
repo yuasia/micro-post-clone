@@ -18,3 +18,15 @@ export const post = async (user_id: string, token: string, msg: string) => {
   const url = `http://localhost:3001/post?user_id=${user_id}&token=${token}`;
   const res = await axios.post(url, data);
 };
+
+export const getPostCount = async (token: string) => {
+  console.log("getPostCount API called");
+  const url = `http://localhost:3001/post/count?token=${token}`;
+  const res = await axios.get(url);
+  return res.data;
+};
+
+export const deletePost = async (id: number, token: string) => {
+  const url = `http://localhost:3001/post/${id}?token=${token}`;
+  const res = await axios.delete(url);
+};

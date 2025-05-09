@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import styled from "styled-components";
 
 const Post = (props: any) => {
-  const { children, post } = props;
+  const { post, onDelete } = props;
 
   const getLines = (src: string): ReactNode => {
     return src.split("\n").map((line, index) => {
@@ -16,6 +16,10 @@ const Post = (props: any) => {
     });
   };
 
+  const handleDelete = () => {
+    onDelete(post.id);
+  };
+
   return (
     <SPostCard>
       <SPostFrame>
@@ -26,6 +30,7 @@ const Post = (props: any) => {
           </SPostHeader>
           <div>{getLines(post.content)}</div>{" "}
         </div>
+        <SDeleteButton onClick={handleDelete}>削除</SDeleteButton>
       </SPostFrame>
     </SPostCard>
   );
@@ -42,7 +47,7 @@ const SPostCard = styled.div`
 const SPostFrame = styled.div`
   display: flex;
   justify-content: space-between;
-  padding-right: 80px;
+  padding-right: 60px;
   align-items: center;
 `;
 
@@ -63,3 +68,23 @@ const SDate = styled.span`
   font-size: small;
   color: #000044;
 `;
+
+const SDeleteButton = styled.button`
+  background:#444444;
+  color: white;
+  width: 60px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background: white;
+    color: #444444;
+    border: 1px solid #444444;
+    }
+  `;

@@ -70,4 +70,65 @@ export class PostService {
 
     return records;
   }
+
+  async getPostCount(token: string) {
+    const now = new Date();
+
+    const auth = await this.prisma.auth.findUnique({
+      where: {
+        token: token,
+        expire_at: {
+          gte: now,
+        },
+      },
+    });
+
+    if (!auth) {
+      throw new ForbiddenException();
+    }
+
+    const count = await this.prisma.microPost.count({
+      where: {
+        user_id: auth.user_id,
+      },
+    });
+
+    return count;
+    console.log('count', count);
+  }
+
+  async deletePost(id: string, token: string) {
+    const now = new Date();
+
+    const auth = await this.prisma.auth.findUnique({
+      where: {
+        token: token,
+        expire_at: {
+          gte: now,
+        },
+      },
+    });
+
+    if (!auth) {
+      throw new ForbiddenException();
+    }
+
+    const post = await this.prisma.microPost.findUnique({
+      where: {
+        id: parseInt(id, 10),
+      },
+    });
+
+    if (!post || post.user_id !== auth.user_id) {
+      throw new ForbiddenException(
+        'You are not authorized to delete this post',
+      );
+    }
+
+    return await this.prisma.microPost.delete({
+      where: {
+        id: parseInt(id, 10),
+      },
+    });
+  }
 }

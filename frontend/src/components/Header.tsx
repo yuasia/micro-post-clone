@@ -63,7 +63,7 @@ const SUserName = styled.div`
 `;
 
 const SLogoutButton = styled.button`
-  background: #555555;
+  background: #444444;
   border: 1px solid white;
   border-radius: 9px;
   padding: 10px 20px;
@@ -73,6 +73,8 @@ const SLogoutButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background: #333333;
+    background: white;
+    color: #444444;
+    border: 1px solid #444444;
   }
 `;
