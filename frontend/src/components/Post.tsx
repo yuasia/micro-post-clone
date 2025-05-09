@@ -18,11 +18,15 @@ const Post = (props: any) => {
 
   return (
     <SPostCard>
-      <SPostHeader>
-        <SName>{post.user_name}</SName>
-        <SDate>{post.created_at}</SDate>
-      </SPostHeader>
-      <div>{getLines(post.content)}</div>
+      <SPostFrame>
+        <div>
+          <SPostHeader>
+            <SName>{post.user_name}</SName>
+            <SDate>{post.created_at}</SDate>
+          </SPostHeader>
+          <div>{getLines(post.content)}</div>{" "}
+        </div>
+      </SPostFrame>
     </SPostCard>
   );
 };
@@ -30,15 +34,21 @@ const Post = (props: any) => {
 export default Post;
 
 const SPostCard = styled.div`
-  padding: 16px;
+  padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ccc;
+`;
+
+const SPostFrame = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding-right: 80px;
+  align-items: center;
 `;
 
 const SPostHeader = styled.div`
   display: flex;
   justify-content: space-between;
-
   align-items: center;
   margin-bottom: 12px;
 `;

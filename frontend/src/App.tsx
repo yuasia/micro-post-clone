@@ -1,5 +1,3 @@
-import "./App.css";
-import styled from "styled-components";
 import SignIn from "./pages/SignIn";
 import { Route, Routes } from "react-router-dom";
 import { UserProvider } from "./providers/UserProvider";
@@ -7,7 +5,7 @@ import Main from "./pages/Main";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <UserProvider>
         <Routes>
           <Route path="/" element={<SignIn />} />

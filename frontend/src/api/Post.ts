@@ -1,7 +1,11 @@
 import axios from "axios";
 
-export const getList = async (token: string) => {
-  const url = `http://localhost:3001/post?token=${token}&records=10`;
+export const getList = async (
+  token: string,
+  start: number,
+  nr_records: number
+) => {
+  const url = `http://localhost:3001/post?token=${token}&start=${start}&records=${nr_records}`;
   const res = await axios.get(url);
   return res.data;
 };

@@ -3,15 +3,20 @@ import { getList, post } from "../api/Post";
 import { useContext, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
 import { PostListContext, PostType } from "../providers/PostListProvider";
+import { PageContext } from "../providers/pageProvider";
 
 const SideBar = () => {
   const [msg, setMsg] = useState("");
 
+  const postsPerPage = 10;
+
   const { userInfo } = useContext(UserContext);
   const { setPostList } = useContext(PostListContext);
+  const { page } = useContext(PageContext);
 
   const getPostList = async () => {
-    const posts = await getList(userInfo.token);
+    const start = (page - 1) * postsPerPage;
+    const posts = await getList(userInfo.token, start, postsPerPage);
     console.log(posts);
     let postList: Array<PostType> = [];
     if (posts) {

@@ -1,20 +1,21 @@
 import Post from "./Post";
 import { getList } from "../api/Post";
+import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
 import { PostListContext, PostType } from "../providers/PostListProvider";
-import styled from "styled-components";
+import { PageContext } from "../providers/pageProvider";
 
 const PostList = () => {
-  const [page, setPage] = useState(1);
   const postsPerPage = 10;
 
   const { postList, setPostList } = useContext(PostListContext);
   const { userInfo } = useContext(UserContext);
+  const { page, setPage } = useContext(PageContext);
 
   const getPostList = async () => {
-    const posts = await getList(userInfo.token);
-    console.log(posts);
+    const start = (page - 1) * postsPerPage;
+    const posts = await getList(userInfo.token, start, postsPerPage);
 
     let postList: Array<PostType> = [];
     if (posts) {
@@ -37,10 +38,21 @@ const PostList = () => {
 
   return (
     <SPostList>
-      <SPostTitle>PostList</SPostTitle>
+      <SPostTitle>Post List</SPostTitle>
       {postList.map((post: PostType) => (
         <Post key={post.id} post={post} />
       ))}
+      <SBtnGroup>
+        <SPaginationButton
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+        >
+          前へ
+        </SPaginationButton>
+        <SPaginationButton onClick={() => setPage(page + 1)}>
+          後へ
+        </SPaginationButton>
+      </SBtnGroup>
     </SPostList>
   );
 };
@@ -48,9 +60,10 @@ const PostList = () => {
 export default PostList;
 
 const SPostList = styled.div`
-  margin-top: 24px;
+  padding-top: 24px;
   height: 100%;
   overflow-y: auto;
+  text-align: center;
 `;
 
 const SPostTitle = styled.div`
@@ -67,5 +80,33 @@ const SPostTitle = styled.div`
     background-color: #444444;
     margin: 8px auto 0;
     border-radius: 2px;
+  }
+`;
+
+const SBtnGroup = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 30px;
+`;
+
+const SPaginationButton = styled.button`
+  background: #555555;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background: #333333;
   }
 `;

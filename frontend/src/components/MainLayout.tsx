@@ -2,23 +2,26 @@ import styled from "styled-components";
 import Header from "../components/Header";
 import SideBar from "../components/SideBar";
 import Contents from "../components/Contents";
+import { PageProvider } from "../providers/pageProvider";
 
 const MainLayout = () => {
   return (
     <>
-      <SHeader>
-        <Header />
-      </SHeader>
+      <PageProvider>
+        <SHeader>
+          <Header />
+        </SHeader>
 
-      <SBody>
-        <SSideBar>
-          <SideBar />
-        </SSideBar>
+        <SBody>
+          <SSideBar>
+            <SideBar />
+          </SSideBar>
 
-        <SContents>
-          <Contents />
-        </SContents>
-      </SBody>
+          <SContents>
+            <Contents />
+          </SContents>
+        </SBody>
+      </PageProvider>
     </>
   );
 };
