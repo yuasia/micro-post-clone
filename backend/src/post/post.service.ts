@@ -71,6 +71,55 @@ export class PostService {
     return records;
   }
 
+  async getSearchList(token: string, search: string) {
+    const now = new Date();
+
+    const auth = await this.prisma.auth.findUnique({
+      where: {
+        token: token,
+        expire_at: {
+          gte: now,
+        },
+      },
+    });
+
+    if (!auth) {
+      throw new ForbiddenException();
+    }
+
+    const qb = await this.prisma.microPost.findMany({
+      where: {
+        content: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    const records = qb.map((post) => {
+      return {
+        id: post.id,
+        content: post.content,
+        user_name: post.user.name,
+        created_at: post.created_at,
+      };
+    });
+
+    console.log(records);
+
+    return records;
+  }
+
   async getPostCount(token: string) {
     const now = new Date();
 

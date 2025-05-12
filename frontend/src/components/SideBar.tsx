@@ -106,18 +106,17 @@ const STextArea = styled.textarea`
 const SButton = styled.button`
   width: 30%;
   padding: 10px 20px;
-  background: #444444;
-  color: white;
+  background: white;
+  color: #444444;
   font-weight: bold;
   font-size: 14px;
-  border: none;
+  border: 1px solid #444444;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background: white;
-    color: #444444;
-    border: 1px solid #444444;
+    background: #444444;
+    color: white;
   }
 `;

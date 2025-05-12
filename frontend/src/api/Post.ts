@@ -10,6 +10,12 @@ export const getList = async (
   return res.data;
 };
 
+export const getSearchList = async (token: string, keyword: string) => {
+  const url = `http://localhost:3001/post/search?token=${token}&keyword=${keyword}`;
+  const res = await axios.get(url);
+  return res.data;
+};
+
 export const post = async (user_id: string, token: string, msg: string) => {
   const data = {
     message: msg,

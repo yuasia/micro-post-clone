@@ -13,19 +13,20 @@ const SignIn = () => {
 
   const onSignInClick = async () => {
     const ret = await sign_in(userId, pass);
-    console.log(ret);
     if (ret && ret.token) {
       setUserInfo({
         id: ret.user_id,
         token: ret.token,
       });
+      localStorage.setItem("token", ret.token);
+      localStorage.setItem("user_id", ret.user_id);
       navigate("/main");
     }
   };
 
   return (
     <SSignInFrame>
-      <SignInTitle>Sign In</SignInTitle>
+      <SignInTitle>Micro Post</SignInTitle>
       <SSignInRow>
         <SSignInLabel htmlFor="id">ID</SSignInLabel>
         <SSignInInput
@@ -115,9 +116,9 @@ const SSignInInput = styled.input`
 const SLoginButton = styled.button`
   width: 100%;
   padding: 12px;
-  background-color: #444444;
-  color: white;
-  border: none;
+  background-color: white;
+  color: #444444;
+  border: 1px solid #444444;
   border-radius: 8px;
   font-size: 16px;
   font-weight: bold;
@@ -125,8 +126,7 @@ const SLoginButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: white;
-    color: #444444;
-    border: 1px solid #444444;
+    background-color: #444444;
+    color: white;
   }
 `;

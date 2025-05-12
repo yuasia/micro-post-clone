@@ -32,6 +32,14 @@ export class PostController {
     return await this.postService.getList(token, startIndex, numRecords);
   }
 
+  @Get('search')
+  async getSearchList(
+    @Query('token') token: string,
+    @Query('keyword') keyword: string,
+  ) {
+    return await this.postService.getSearchList(token, keyword);
+  }
+
   @Get('count')
   async getPostCount(@Query('token') token: string) {
     const count = await this.postService.getPostCount(token);

@@ -70,11 +70,11 @@ const SDate = styled.span`
 `;
 
 const SDeleteButton = styled.button`
-  background:#444444;
-  color: white;
+  background:white;
+  color: #444444;
   width: 60px;
   height: 30px;
-  border: none;
+  border: 1px solid #444444;
   border-radius: 8px;
   padding: 4px 8px;
   font-size: 12px;
@@ -83,8 +83,7 @@ const SDeleteButton = styled.button`
   transition: background-color 0.3s ease;
   
   &:hover {
-    background: white;
-    color: #444444;
-    border: 1px solid #444444;
+    background: #444444;
+    color: white;
     }
   `;
