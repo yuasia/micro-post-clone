@@ -6,12 +6,22 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  createUser(
+  async createUser(
     @Body('name') name: string,
     @Body('email') email: string,
     @Body('password') password: string,
   ) {
-    this.userService.createUser(name, email, password);
+    return await this.userService.createUser(name, email, password);
+  }
+
+  @Post('update')
+  async updateUser(
+    @Body('token') token: string,
+    @Body('name') name: string,
+    @Body('email') email: string,
+    @Body('password') password: string,
+  ) {
+    return await this.userService.updateUser(token, { name, email, password });
   }
 
   @Get(':id')

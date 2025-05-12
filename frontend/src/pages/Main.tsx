@@ -9,9 +9,6 @@ const Main = () => {
   const { userInfo, isInitialized } = useContext(UserContext);
   const loggedIn = userInfo.token !== "";
 
-  console.log("Main", loggedIn);
-  console.log("userInfo", userInfo);
-
   if (!isInitialized) return <div>Loading...</div>;
 
   if (!userInfo.token) return <Navigate to="/" />;

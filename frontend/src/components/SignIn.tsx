@@ -1,7 +1,7 @@
 import { sign_in } from "../api/Auth";
 import styled from "styled-components";
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../providers/UserProvider";
 
 const SignIn = () => {
@@ -18,6 +18,7 @@ const SignIn = () => {
         id: ret.user_id,
         token: ret.token,
       });
+      console.log("ret", ret);
       localStorage.setItem("token", ret.token);
       localStorage.setItem("user_id", ret.user_id);
       navigate("/main");
@@ -50,6 +51,7 @@ const SignIn = () => {
           Login
         </SLoginButton>
       </SSignInRow>
+      <Link to="/signup">アカウントをお持ちでない場合</Link>
     </SSignInFrame>
   );
 };

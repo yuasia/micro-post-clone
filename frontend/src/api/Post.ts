@@ -26,7 +26,6 @@ export const post = async (user_id: string, token: string, msg: string) => {
 };
 
 export const getPostCount = async (token: string) => {
-  console.log("getPostCount API called");
   const url = `http://localhost:3001/post/count?token=${token}`;
   const res = await axios.get(url);
   return res.data;

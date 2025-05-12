@@ -45,11 +45,14 @@ export class PostService {
     }
 
     const qb = await this.prisma.microPost.findMany({
-      skip: start,
-      take: nr_records,
+      where: {
+        user_id: auth.user_id,
+      },
       orderBy: {
         created_at: 'desc',
       },
+      skip: start,
+      take: nr_records,
       include: {
         user: {
           select: {
@@ -59,14 +62,14 @@ export class PostService {
       },
     });
 
-    const records = qb.map((post) => ({
-      id: post.id,
-      content: post.content,
-      user_name: post.user.name,
-      created_at: post.created_at,
-    }));
-
-    console.log(records);
+    const records = qb.map((post) => {
+      return {
+        id: post.id,
+        content: post.content,
+        user_name: post.user.name,
+        created_at: post.created_at,
+      };
+    });
 
     return records;
   }

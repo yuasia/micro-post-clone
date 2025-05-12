@@ -33,6 +33,7 @@ const PostList = () => {
       });
 
       setPostList(postList);
+      console.log("postList", postList);
     }
   };
 
@@ -48,8 +49,6 @@ const PostList = () => {
   useEffect(() => {
     getPostList();
   }, [page]);
-
-  console.log("postListCount", totalPosts);
 
   return (
     <SPostList>
@@ -109,9 +108,9 @@ const SBtnGroup = styled.div`
 `;
 
 const SPaginationButton = styled.button`
-  background: #444444;
-  color: white;
-  border: none;
+  background: white;
+  color: #444444;
+  border: 1px solid #444444;
   border-radius: 16px;
   padding: 8px 16px;
   font-size: 12px;
@@ -120,13 +119,14 @@ const SPaginationButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:disabled {
-    background-color: #ccc;
+    background-color: #f0f0f0;
+    color: #999999;
+    border: 1px solid #999999;
     cursor: not-allowed;
   }
 
   &:hover:not(:disabled) {
-    background: white;
-    color: #444444;
-    border: 1px solid #444444;
+    background: #444444;
+    color: white;
   }
 `;

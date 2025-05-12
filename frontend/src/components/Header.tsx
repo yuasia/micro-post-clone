@@ -1,7 +1,7 @@
 import { getUser } from "../api/User";
 import { getSearchList } from "../api/Post";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
 import { SearchContext } from "../providers/SearchProvider";
@@ -83,7 +83,7 @@ const Header = () => {
       </SSearchWrapper>
 
       <SUserInfo>
-        <SUserName>{userName}</SUserName>
+        <SUserNameLink to={"/profile"}>{userName}</SUserNameLink>
         <SLogoutButton onClick={logout}>Logout</SLogoutButton>
       </SUserInfo>
     </SHeader>
@@ -114,8 +114,14 @@ const SUserInfo = styled.div`
   gap: 30px;
 `;
 
-const SUserName = styled.div`
-  font-size: 18px;
+const SUserNameLink = styled(Link)`
+  color: #444444;
+  text-decoration: none;
+
+  &:hover {
+    color: #6666ff;
+    text-decoration: underline;
+  }
 `;
 
 const SLogoutButton = styled.button`
