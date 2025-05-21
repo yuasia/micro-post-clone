@@ -94,6 +94,7 @@ export class PostService {
 
     const qb = await this.prisma.microPost.findMany({
       where: {
+        user_id: auth.user_id,
         content: {
           contains: search,
           mode: 'insensitive',

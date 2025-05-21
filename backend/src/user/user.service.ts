@@ -101,6 +101,10 @@ export class UserService {
       },
     });
 
+    if (!user) {
+      throw new NotFoundException();
+    }
+
     const updateData: any = { updated_at: new Date() };
 
     if (dto.name) {
