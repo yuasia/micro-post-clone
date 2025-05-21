@@ -2,6 +2,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { useContext, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
+import UploadWidget from "./UploadWidget";
 
 const Profile = () => {
   const { userInfo } = useContext(UserContext);
@@ -35,6 +36,7 @@ const Profile = () => {
     <SContainer>
       <SCard>
         <h2>ユーザー情報変更</h2>
+        <UploadWidget />
         <SInputGroup>
           <SInput
             type="text"
@@ -86,9 +88,9 @@ const SCard = styled.div`
   justify-content: center;
   background: white;
   border-radius: 16px;
-  padding: 20px;
+  padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 500px;
+  height: 600px;
   width: 100%;
   max-width: 500px;
   gap: 30px;
