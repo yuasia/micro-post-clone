@@ -1,21 +1,23 @@
-import { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../providers/UserProvider";
 import axios from "axios";
+import styled from "styled-components";
+import { useContext, useState } from "react";
+import { UserContext } from "../providers/UserProvider";
 
 const Profile = () => {
   const { userInfo } = useContext(UserContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [currentPassword, setCurrentPassword] = useState("");
 
   const onUpdate = async () => {
     const payload: any = { token: userInfo.token };
     if (name.trim()) payload.name = name;
     if (email.trim()) payload.email = email;
-    if (password.trim()) payload.password = password;
+    if (password.trim()) {
+      payload.currentPassword = currentPassword;
+      payload.password = password;
+    }
 
     try {
       const res = await axios.post(
@@ -32,7 +34,7 @@ const Profile = () => {
   return (
     <SContainer>
       <SCard>
-        <h2>ユーザー情報</h2>
+        <h2>ユーザー情報変更</h2>
         <SInputGroup>
           <SInput
             type="text"
@@ -48,7 +50,13 @@ const Profile = () => {
           />
           <SInput
             type="text"
-            placeholder="password"
+            placeholder="current password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+          />
+          <SInput
+            type="text"
+            placeholder="new password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -80,7 +88,7 @@ const SCard = styled.div`
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 400px;
+  height: 500px;
   width: 100%;
   max-width: 500px;
   gap: 30px;
@@ -88,12 +96,15 @@ const SCard = styled.div`
 
 const SInputGroup = styled.div`
   display: flex;
+  align-items: center;
   flex-direction: column;
+  background: white;
+  width: 100%;
   gap: 20px;
 `;
 
 const SInput = styled.input`
-  width: 100%;
+  width: 60%;
   padding: 12px 16px;
   margin-bottom: 16px;
   border-radius: 8px;
@@ -118,7 +129,7 @@ const SRButton = styled.button`
   background: white;
   border: 1px solid #444444;
   border-radius: 8px;
-  padding: 10px;
+  text-align: center;
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -94,15 +95,38 @@ export class UserService {
       throw new ForbiddenException();
     }
 
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: auth.user_id,
+      },
+    });
+
     const updateData: any = { updated_at: new Date() };
 
     if (dto.name) {
       updateData.name = dto.name;
     }
     if (dto.email) {
+      const exist = await this.prisma.user.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
+      if (exist) {
+        throw new ForbiddenException('email already exists');
+      }
       updateData.email = dto.email;
     }
     if (dto.password) {
+      if (!dto.currentPassword) {
+        throw new BadRequestException('current password is required');
+      }
+      const currentHash = crypto
+        .createHash('md5')
+        .update(dto.currentPassword)
+        .digest('hex');
+      if (currentHash !== user.hash)
+        throw new ForbiddenException('current password is invalid');
       updateData.hash = crypto
         .createHash('md5')
         .update(dto.password)

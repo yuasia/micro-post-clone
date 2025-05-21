@@ -11,7 +11,11 @@ import { Search } from "lucide-react";
 const Header = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [updateDate, setUpdateDate] = useState("");
   const [inputText, setInputText] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
+
   const { userInfo, setUserInfo } = useContext(UserContext);
   const { setPostList } = useContext(PostListContext);
   const { searchText, setSearchText } = useContext(SearchContext);
@@ -58,6 +62,8 @@ const Header = () => {
     const myGetUser = async () => {
       const user = await getUser(userInfo.id, userInfo.token);
       setUserName(user.name);
+      setUserEmail(user.email);
+      setUpdateDate(new Date(user.updated_at).toISOString().split("T")[0]);
     };
 
     myGetUser();
@@ -83,7 +89,28 @@ const Header = () => {
       </SSearchWrapper>
 
       <SUserInfo>
-        <SUserNameLink to={"/profile"}>{userName}</SUserNameLink>
+        <SUserInfoContainer
+          onMouseEnter={() => setShowDialog(true)}
+          onMouseLeave={() => setShowDialog(false)}
+        >
+          {showDialog && (
+            <SUserDialog>
+              <SUserContent>
+                <SUserDialogTitle>User Information</SUserDialogTitle>
+                <SUserDialogContent>
+                  {" "}
+                  <p>User Name</p>
+                  <p>{userName}</p>
+                  <p>Email</p>
+                  <p>{userEmail}</p>
+                  <p>Last Update</p>
+                  <p>{updateDate}</p>
+                </SUserDialogContent>
+              </SUserContent>
+            </SUserDialog>
+          )}
+          <SUserNameLink to={"/profile"}>{userName}</SUserNameLink>
+        </SUserInfoContainer>
         <SLogoutButton onClick={logout}>Logout</SLogoutButton>
       </SUserInfo>
     </SHeader>
@@ -165,4 +192,65 @@ const SSearchInput = styled.input`
     border-color: #6666ff;
     box-shadow: 0 0 5px #6666ff;
   }
+`;
+
+const SUserInfoContainer = styled.div`
+  position: relative;
+`;
+
+const SUserDialog = styled.div`
+  position: absolute;
+  top: 30px;
+  right: 0;
+  height: 400px;
+  width: 400px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding 20px;
+  gap: 20px;
+  z-index: 10;
+  animation: fadeIn 0.2s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
+const SUserContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const SUserDialogTitle = styled.p`
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #333;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #555555;
+    margin: 8px auto 0;
+    border-radius: 2px;
+  }
+`;
+
+const SUserDialogContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
 `;
