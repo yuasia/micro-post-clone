@@ -6,6 +6,7 @@ import {
 import { createHash } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as crypto from 'crypto';
+import { UpdateUserDto } from 'src/dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -77,14 +78,7 @@ export class UserService {
     return user;
   }
 
-  async updateUser(
-    token: string,
-    data: {
-      name: string;
-      email: string;
-      password: string;
-    },
-  ) {
+  async updateUser(token: string, dto: UpdateUserDto) {
     const now = new Date();
 
     const auth = await this.prisma.auth.findFirst({
@@ -100,23 +94,29 @@ export class UserService {
       throw new ForbiddenException();
     }
 
-    const hash = crypto.createHash('md5').update(data.password).digest('hex');
+    const updateData: any = { updated_at: new Date() };
+
+    if (dto.name) {
+      updateData.name = dto.name;
+    }
+    if (dto.email) {
+      updateData.email = dto.email;
+    }
+    if (dto.password) {
+      updateData.hash = crypto
+        .createHash('md5')
+        .update(dto.password)
+        .digest('hex');
+    }
 
     const updated = await this.prisma.user.update({
-      where: {
-        id: auth.user_id,
-      },
-      data: {
-        name: data.name,
-        email: data.email,
-        hash: hash,
-        updated_at: new Date(),
-      },
+      where: { id: auth.user_id },
+      data: updateData,
     });
 
     return {
-      message: 'ユーザー情報を更新しました',
       user: {
+        id: updated.id,
         name: updated.name,
         email: updated.email,
       },

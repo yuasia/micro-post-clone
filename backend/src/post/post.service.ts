@@ -44,6 +44,8 @@ export class PostService {
       throw new ForbiddenException();
     }
 
+    console.log('auth', auth);
+
     const qb = await this.prisma.microPost.findMany({
       where: {
         user_id: auth.user_id,

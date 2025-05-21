@@ -1,17 +1,39 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../providers/UserProvider";
+import axios from "axios";
 
 const Profile = () => {
+  const { userInfo } = useContext(UserContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const onUpdate = async () => {
+    const payload: any = { token: userInfo.token };
+    if (name.trim()) payload.name = name;
+    if (email.trim()) payload.email = email;
+    if (password.trim()) payload.password = password;
+
+    try {
+      const res = await axios.post(
+        "http://localhost:3001/user/update",
+        payload
+      );
+      alert("ユーザー情報を更新しました");
+    } catch (err) {
+      console.error("更新失敗", err);
+      alert("ユーザー情報の更新に失敗しました");
+    }
+  };
 
   return (
     <SContainer>
       <SCard>
         <h2>ユーザー情報</h2>
-        <SInputForm>
+        <SInputGroup>
           <SInput
             type="text"
             placeholder="name"
@@ -27,12 +49,12 @@ const Profile = () => {
           <SInput
             type="text"
             placeholder="password"
-            value={pass}
-            onChange={(e) => setPass(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
-        </SInputForm>
+        </SInputGroup>
 
-        <SRButton>変更</SRButton>
+        <SRButton onClick={onUpdate}>変更</SRButton>
       </SCard>
     </SContainer>
   );
@@ -64,7 +86,7 @@ const SCard = styled.div`
   gap: 30px;
 `;
 
-const SInputForm = styled.div`
+const SInputGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -81,6 +103,13 @@ const SInput = styled.input`
     outline: none;
     border-color: #6666ff;
   }
+`;
+
+const SButtonGroup = styled.div`
+  display: flex;
+  justify-content: center;
+  background: black;
+  width: 100%;
 `;
 
 const SRButton = styled.button`

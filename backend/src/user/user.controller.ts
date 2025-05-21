@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
+import { UpdateUserDto } from 'src/dto/user.dto';
 
 @Controller('user')
 export class UserController {
@@ -15,13 +16,8 @@ export class UserController {
   }
 
   @Post('update')
-  async updateUser(
-    @Body('token') token: string,
-    @Body('name') name: string,
-    @Body('email') email: string,
-    @Body('password') password: string,
-  ) {
-    return await this.userService.updateUser(token, { name, email, password });
+  async updateUser(@Body('token') token: string, @Body() dto: UpdateUserDto) {
+    return await this.userService.updateUser(token, dto);
   }
 
   @Get(':id')
