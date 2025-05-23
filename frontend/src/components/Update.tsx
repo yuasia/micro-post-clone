@@ -12,15 +12,8 @@ const Update = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
-  const [ShowPasswordFiled, setShowPasswordField] = useState(false);
 
   const { userInfo } = useContext(UserContext);
-
-  const togglePasswordField = () => {
-    setShowPasswordField(!ShowPasswordFiled);
-    setCurrentPassword("");
-    setNewPassword("");
-  };
 
   const onUpdate = async () => {
     const payload: any = { token: userInfo.token };
@@ -63,9 +56,6 @@ const Update = () => {
         <SCard>
           <h2>ユーザー情報変更</h2>
           <UploadWidget setAvatarUrl={setAvatarUrl} />
-          <SToggleButton onClick={togglePasswordField}>
-            パスワードを変更
-          </SToggleButton>
           <SInputGroup>
             <SInput
               type="text"
@@ -79,27 +69,19 @@ const Update = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-
-            {ShowPasswordFiled && (
-              <div>
-                <div>現在のパスワード</div>
-                <SInput
-                  type="text"
-                  placeholder="current password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                />
-                <div>新しいパスワード</div>
-                <SInput
-                  type="text"
-                  placeholder="new password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-              </div>
-            )}
+            <SInput
+              type="password"
+              placeholder="current password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <SInput
+              type="password"
+              placeholder="new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />{" "}
           </SInputGroup>
-
           <SRButton onClick={onUpdate}>変更を適用</SRButton>
         </SCard>
       </SContainer>
@@ -143,7 +125,7 @@ const SInputGroup = styled.div`
 `;
 
 const SInput = styled.input`
-  width: 50%;
+  width: 60%;
   padding: 12px 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -174,21 +156,15 @@ const SRButton = styled.button`
   }
 `;
 
-const SToggleButton = styled.button`
-  width: 50%;
-  height: 60px;
-  background: white;
-  border: 1px solid #444444;
-  border-radius: 10px;
-  text-align: center;
+const SToggleBUtton = styled.button`
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
   cursor: pointer;
-  font-size: 16px;
   font-weight: bold;
-  color: #444444;
-  transition: background 0.3s;
 
   &:hover {
-    background: #444444;
-    color: white;
+    background: #e0e0e0;
   }
 `;

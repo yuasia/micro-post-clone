@@ -42,7 +42,7 @@ const SignIn = () => {
         <SSignInInput
           id="password"
           value={pass}
-          type="text"
+          type="password"
           onChange={(e) => setPass(e.target.value)}
         />
       </SSignInRow>
