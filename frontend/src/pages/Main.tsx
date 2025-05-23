@@ -1,13 +1,12 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import MainLayout from "../components/MainLayout";
 import { UserContext } from "../providers/UserProvider";
-import { PostListProvider } from "../providers/PostListProvider";
 import { SearchProvider } from "../providers/SearchProvider";
+import { PostListProvider } from "../providers/PostListProvider";
 
 const Main = () => {
   const { userInfo, isInitialized } = useContext(UserContext);
-  const loggedIn = userInfo.token !== "";
 
   if (!isInitialized) return <div>Loading...</div>;
 

@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { UserProvider } from "./providers/UserProvider";
 import Main from "./pages/Main";
 import SignUp from "./components/SignUp";
-import Profile from "./components/Profile";
+import Update from "./components/Update";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
           <Route path="/" element={<SignIn />} />
           <Route path="/main" element={<Main />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/update" element={<Update />} />
         </Routes>
       </UserProvider>
     </div>

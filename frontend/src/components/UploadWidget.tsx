@@ -1,5 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
+
+type UploadWidgetProps = {
+  setAvatarUrl: (url: string) => void;
+};
 
 declare global {
   interface Window {
@@ -7,10 +11,9 @@ declare global {
   }
 }
 
-const UploadWidget = () => {
+const UploadWidget = ({ setAvatarUrl }: UploadWidgetProps) => {
   const cloudinaryRef = useRef<any>(null);
   const widgetRef = useRef<any>(null);
-  const [imageUrl, setImageUrl] = useState<string>("");
 
   useEffect(() => {
     cloudinaryRef.current = window.cloudinary;
@@ -21,8 +24,7 @@ const UploadWidget = () => {
       },
       function (error: any, result: any) {
         if (!error && result && result.event === "success") {
-          console.log("Done! Here is the image info: ", result.info);
-          setImageUrl(result.info.secure_url);
+          setAvatarUrl(result.info.secure_url);
         }
       }
     );

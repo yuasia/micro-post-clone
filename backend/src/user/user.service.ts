@@ -121,6 +121,9 @@ export class UserService {
       }
       updateData.email = dto.email;
     }
+    if (dto.avatar_url) {
+      updateData.avatar_url = dto.avatar_url;
+    }
     if (dto.password) {
       if (!dto.currentPassword) {
         throw new BadRequestException('current password is required');

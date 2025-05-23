@@ -1,28 +1,39 @@
 import { getUser } from "../api/User";
-import { getList, getSearchList } from "../api/Post";
+import { Search } from "lucide-react";
 import styled from "styled-components";
+import { getList, getSearchList } from "../api/Post";
 import { Link, useNavigate } from "react-router-dom";
+import { PageContext } from "../providers/pageProvider";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
 import { SearchContext } from "../providers/SearchProvider";
 import { PostListContext, PostType } from "../providers/PostListProvider";
-import { Search } from "lucide-react";
-import { PageContext } from "../providers/pageProvider";
+import { get } from "http";
 
 const Header = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [inputText, setInputText] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [updateDate, setUpdateDate] = useState("");
-  const [inputText, setInputText] = useState("");
   const [showDialog, setShowDialog] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("");
 
   const postsPerPage = 10;
 
+  const { page } = useContext(PageContext);
   const { setPostList } = useContext(PostListContext);
   const { userInfo, setUserInfo } = useContext(UserContext);
-  const { page, setPage } = useContext(PageContext);
   const { searchText, setSearchText } = useContext(SearchContext);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const user = await getUser(userInfo.id, userInfo.token);
+      setAvatarUrl(user.avatar_url);
+    };
+
+    fetchUserInfo();
+  }, []);
 
   /*
    * 不要なAPIコールを避けるために、300msの遅延を設けている
@@ -118,7 +129,13 @@ const Header = () => {
               </SUserContent>
             </SUserDialog>
           )}
-          <SUserNameLink to={"/profile"}>{userName}</SUserNameLink>
+          <SUserNameLink to={"/update"}>
+            <SUserAvatar
+              alt="User Avatar"
+              src={avatarUrl}
+              style={{ width: "44px", height: "44px", borderRadius: "50%" }}
+            />
+          </SUserNameLink>
         </SUserInfoContainer>
         <SLogoutButton onClick={logout}>Logout</SLogoutButton>
       </SUserInfo>
@@ -209,7 +226,7 @@ const SUserInfoContainer = styled.div`
 
 const SUserDialog = styled.div`
   position: absolute;
-  top: 30px;
+  top: 60px;
   right: 0;
   height: 400px;
   width: 400px;
@@ -262,4 +279,18 @@ const SUserDialogContent = styled.div`
   flex-direction: column;
   align-items: center;
   font-size: 14px;
+`;
+
+const SUserAvatar = styled.img`
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: border 0.2s ease, box-shadow 0.2 ease;
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid #6666ff;
+    box-shadow: 0 0 5px rgba(102, 102, 255, 0.5);
+  }
 `;
