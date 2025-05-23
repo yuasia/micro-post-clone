@@ -18,6 +18,7 @@ model User {
   hash String @unique
   name String
   email String @unique
+  avatar_url String @default("https://www.gravatar.com/avatar")
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   microPosts MicroPost[]

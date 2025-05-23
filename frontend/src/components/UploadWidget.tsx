@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 
 declare global {
   interface Window {
@@ -9,6 +10,7 @@ declare global {
 const UploadWidget = () => {
   const cloudinaryRef = useRef<any>(null);
   const widgetRef = useRef<any>(null);
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   useEffect(() => {
     cloudinaryRef.current = window.cloudinary;
@@ -20,14 +22,36 @@ const UploadWidget = () => {
       function (error: any, result: any) {
         if (!error && result && result.event === "success") {
           console.log("Done! Here is the image info: ", result.info);
+          setImageUrl(result.info.secure_url);
         }
       }
     );
   }, []);
 
   return (
-    <button onClick={() => widgetRef.current.open()}>画像をアップロード</button>
+    <SRButton onClick={() => widgetRef.current.open()}>
+      画像をアップロード
+    </SRButton>
   );
 };
 
 export default UploadWidget;
+
+const SRButton = styled.button`
+  width: 50%;
+  height: 60px;
+  background: white;
+  border: 1px solid #444444;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  color: #444444;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #444444;
+    color: white;
+  }
+`;

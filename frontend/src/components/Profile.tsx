@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useContext, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
 import UploadWidget from "./UploadWidget";
+import { X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { userInfo } = useContext(UserContext);
@@ -10,6 +12,8 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const onUpdate = async () => {
     const payload: any = { token: userInfo.token };
@@ -33,40 +37,55 @@ const Profile = () => {
   };
 
   return (
-    <SContainer>
-      <SCard>
-        <h2>ユーザー情報変更</h2>
-        <UploadWidget />
-        <SInputGroup>
-          <SInput
-            type="text"
-            placeholder="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <SInput
-            type="text"
-            placeholder="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <SInput
-            type="text"
-            placeholder="current password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-          <SInput
-            type="text"
-            placeholder="new password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </SInputGroup>
+    <>
+      <Link to={"/main"}>
+        {" "}
+        <X
+          style={{
+            position: "absolute",
+            top: 20,
+            right: 20,
+            color: "black",
+            cursor: "pointer",
+          }}
+          size={40}
+        />
+      </Link>
+      <SContainer>
+        <SCard>
+          <h2>ユーザー情報変更</h2>
+          <UploadWidget />
+          <SInputGroup>
+            <SInput
+              type="text"
+              placeholder="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <SInput
+              type="text"
+              placeholder="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <SInput
+              type="password"
+              placeholder="current password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <SInput
+              type="password"
+              placeholder="new password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </SInputGroup>
 
-        <SRButton onClick={onUpdate}>変更</SRButton>
-      </SCard>
-    </SContainer>
+          <SRButton onClick={onUpdate}>変更</SRButton>
+        </SCard>
+      </SContainer>
+    </>
   );
 };
 
@@ -102,27 +121,20 @@ const SInputGroup = styled.div`
   flex-direction: column;
   background: white;
   width: 100%;
-  gap: 20px;
+  gap: 30px;
 `;
 
 const SInput = styled.input`
   width: 60%;
   padding: 12px 16px;
-  margin-bottom: 16px;
   border-radius: 8px;
+  border: 1px solid #ccc;
   font-size: 14px;
 
   &:focus {
     outline: none;
     border-color: #6666ff;
   }
-`;
-
-const SButtonGroup = styled.div`
-  display: flex;
-  justify-content: center;
-  background: black;
-  width: 100%;
 `;
 
 const SRButton = styled.button`

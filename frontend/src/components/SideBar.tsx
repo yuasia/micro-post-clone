@@ -94,7 +94,7 @@ const STextArea = styled.textarea`
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 14px;
-  font-size: 14px;
+  font-size: 16px;
   min-height: 500px;
 
   &:focus {

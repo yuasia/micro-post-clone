@@ -11,9 +11,9 @@ const PostList = () => {
 
   const postsPerPage = 10;
 
-  const { postList, setPostList } = useContext(PostListContext);
   const { userInfo } = useContext(UserContext);
   const { page, setPage } = useContext(PageContext);
+  const { postList, setPostList } = useContext(PostListContext);
 
   const getPostList = async () => {
     const start = (page - 1) * postsPerPage;
@@ -33,7 +33,6 @@ const PostList = () => {
       });
 
       setPostList(postList);
-      console.log("postList", postList);
     }
   };
 

@@ -1,5 +1,5 @@
 import { getUser } from "../api/User";
-import { getSearchList } from "../api/Post";
+import { getList, getSearchList } from "../api/Post";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import { UserContext } from "../providers/UserProvider";
 import { SearchContext } from "../providers/SearchProvider";
 import { PostListContext, PostType } from "../providers/PostListProvider";
 import { Search } from "lucide-react";
+import { PageContext } from "../providers/pageProvider";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -16,8 +17,11 @@ const Header = () => {
   const [inputText, setInputText] = useState("");
   const [showDialog, setShowDialog] = useState(false);
 
-  const { userInfo, setUserInfo } = useContext(UserContext);
+  const postsPerPage = 10;
+
   const { setPostList } = useContext(PostListContext);
+  const { userInfo, setUserInfo } = useContext(UserContext);
+  const { page, setPage } = useContext(PageContext);
   const { searchText, setSearchText } = useContext(SearchContext);
 
   /*
@@ -34,7 +38,12 @@ const Header = () => {
   }, [inputText]);
 
   const getSearchedPost = async () => {
-    const posts = await getSearchList(userInfo.token, searchText);
+    let posts = await getSearchList(userInfo.token, searchText);
+
+    if (!searchText) {
+      const start = (page - 1) * postsPerPage;
+      posts = await getList(userInfo.token, start, postsPerPage);
+    }
 
     let postList: Array<PostType> = [];
     if (posts) {
