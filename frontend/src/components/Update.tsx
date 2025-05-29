@@ -145,7 +145,7 @@ const SRButton = styled.button`
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   color: #444444;
   transition: background 0.3s;

@@ -28,6 +28,8 @@ const Header = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      console.log("userInfo", userInfo);
+
       const user = await getUser(userInfo.id, userInfo.token);
       setAvatarUrl(user.avatar_url);
     };

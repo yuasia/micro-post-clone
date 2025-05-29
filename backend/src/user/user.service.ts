@@ -51,6 +51,8 @@ export class UserService {
   }
 
   async getUser(token: string, id: number) {
+    console.log('getUser', token, id);
+
     const now = new Date();
 
     const auth = await this.prisma.auth.findFirst({

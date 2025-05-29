@@ -16,6 +16,8 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
   hash String @unique
+  otp String?
+  otp_expire_at DateTime?
   name String
   email String @unique
   avatar_url String @default("https://www.gravatar.com/avatar")

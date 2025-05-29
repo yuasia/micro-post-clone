@@ -1,27 +1,18 @@
-import { sign_in } from "../api/Auth";
+import { useState } from "react";
 import styled from "styled-components";
-import { useContext, useState } from "react";
+import { login, sign_in } from "../api/Auth";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "../providers/UserProvider";
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState("");
   const [pass, setPass] = useState("");
-
-  const { userInfo, setUserInfo } = useContext(UserContext);
+  const [email, setEmail] = useState("");
 
   const onSignInClick = async () => {
-    const ret = await sign_in(userId, pass);
-    if (ret && ret.token) {
-      setUserInfo({
-        id: ret.user_id,
-        token: ret.token,
-      });
-      console.log("ret", ret);
-      localStorage.setItem("token", ret.token);
-      localStorage.setItem("user_id", ret.user_id);
-      navigate("/main");
+    const ret = await login(email, pass);
+    if (ret && ret.require_otp) {
+      localStorage.setItem("temp_user_id", ret.user_id);
+      navigate("/verify_otp");
     }
   };
 
@@ -29,16 +20,16 @@ const SignIn = () => {
     <SSignInFrame>
       <SignInTitle>Micro Post</SignInTitle>
       <SSignInRow>
-        <SSignInLabel htmlFor="id">ID</SSignInLabel>
+        <SSignInLabel htmlFor="id">email</SSignInLabel>
         <SSignInInput
           id="id"
-          value={userId}
+          value={email}
           type="text"
-          onChange={(e) => setUserId(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </SSignInRow>
       <SSignInRow>
-        <SSignInLabel htmlFor="id">PASSWORD</SSignInLabel>
+        <SSignInLabel htmlFor="id">password</SSignInLabel>
         <SSignInInput
           id="password"
           value={pass}
