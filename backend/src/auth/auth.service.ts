@@ -83,7 +83,10 @@ export class AuthService {
       });
       ret.token = updated.token;
     } else {
-      const token = crypto.randomUUID();
+      const payload = { sub: user.id.toString(), type: 'auth' };
+      const token = this.jwtService.sign(payload, {
+        expiresIn: '1d',
+      });
       const created = await this.prisma.auth.create({
         data: {
           user_id: user.id,
