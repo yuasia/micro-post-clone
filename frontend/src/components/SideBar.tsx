@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { getList, post } from "../api/Post";
 import { useContext, useState } from "react";
+import { PageContext } from "../providers/pageProvider";
 import { UserContext } from "../providers/UserProvider";
 import { PostListContext, PostType } from "../providers/PostListProvider";
-import { PageContext } from "../providers/pageProvider";
 
 const SideBar = () => {
   const [msg, setMsg] = useState("");
