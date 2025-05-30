@@ -25,8 +25,8 @@ const ForgotPassword = () => {
         <X
           style={{
             position: "absolute",
-            top: 22,
-            right: 22,
+            top: 20,
+            right: 20,
             color: "black",
             cursor: "pointer",
           }}

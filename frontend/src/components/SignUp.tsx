@@ -32,106 +32,124 @@ const SignUp = () => {
   };
 
   return (
-    <SContainer>
+    <SUContainer>
       <Link to={"/main"}>
         {" "}
         <X
           style={{
             position: "absolute",
-            top: 22,
-            right: 22,
+            top: 20,
+            right: 20,
             color: "black",
             cursor: "pointer",
           }}
           size={40}
         />
       </Link>
-      <SCard>
-        <h2>Sign Up</h2>
-        <SInputForm>
-          <SInput
+      <SUCard>
+        <SUTitle>Sign Up</SUTitle>
+        <SUInputForm>
+          <SUInput
             type="text"
             placeholder="user name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <SInput
+          <SUInput
             type="text"
             placeholder="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <SInput
+          <SUInput
             type="text"
             placeholder="password"
             value={pass}
             onChange={(e) => setPass(e.target.value)}
           />
-        </SInputForm>
+        </SUInputForm>
 
-        <SRButton onClick={onRegister}>登録</SRButton>
-      </SCard>
-    </SContainer>
+        <SUButton onClick={onRegister}>登録</SUButton>
+      </SUCard>
+    </SUContainer>
   );
 };
 
 export default SignUp;
 
-const SContainer = styled.div`
+const SUContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: #f0f0f0;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 20px;
+  position: relative;
 `;
 
-const SCard = styled.div`
+const SUCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: white;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   height: 400px;
   width: 100%;
   max-width: 500px;
-  gap: 30px;
+  text-align: center;
 `;
 
-const SInputForm = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-
-const SInput = styled.input`
-  width: 100%;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  font-size: 14px;
-
-  &:focus {
-    outline: none;
-    border-color: #6666ff;
+const SUTitle = styled.h2`
+  font-size: 28px;
+  margin-bottom: 24px;
+  color: #444444;
+  &::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    background-color: #444444;
+    margin: 8px auto 0;
+    border-radius: 2px;
   }
 `;
 
-const SRButton = styled.button`
-  width: 25%;
-  height: 40px;
+const SUInputForm = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+`;
+
+const SUInput = styled.input`
+  padding: 10px 20px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 18px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    outline: none;
+  }
+`;
+
+const SUButton = styled.button`
   background: white;
+  color: #444444;
   border: 1px solid #444444;
-  border-radius: 8px;
-  padding: 9px;
-  cursor: pointer;
+  border-radius: 10px;
+  padding: 6px 24px;
   font-size: 16px;
   font-weight: bold;
-  color: #444444;
-  transition: background 0.3s;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 
   &:hover {
     background: #444444;
