@@ -23,3 +23,20 @@ export const sign_in = async (user_id: string, password: string) => {
   const res = await axios.get(url);
   return res.data;
 };
+
+export const requestPasswordReset = async (email: string) => {
+  const url = "http://localhost:3001/auth/request-reset";
+  const res = await axios.post(url, {
+    email,
+  });
+  return res.data;
+};
+
+export const resetPassword = async (token: string, password: string) => {
+  const url = "http://localhost:3001/auth/reset-password";
+  const res = await axios.post(url, {
+    token,
+    password,
+  });
+  return res.data;
+};

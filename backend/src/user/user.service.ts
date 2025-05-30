@@ -14,6 +14,8 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createUser(name: string, email: string, password: string) {
+    console.log('reached here 1');
+
     const existingUser = await this.prisma.user.findUnique({
       where: {
         email: email,
@@ -24,9 +26,19 @@ export class UserService {
       throw new ForbiddenException('user already exists');
     }
 
-    if (password.length < 8 || !/^[a-zA-Z0-9]+$/.test(password)) {
+    console.log('reached here 2');
+
+    if (
+      password.length < 8 ||
+      !/[a-z]/.test(password) ||
+      !/[A-Z]/.test(password) ||
+      !/[0-9]/.test(password) ||
+      !/[!@#$%^&*(),+.?":{}|<>]/.test(password)
+    ) {
       throw new ForbiddenException('password is invalid');
     }
+
+    console.log('reached here 3');
 
     const hash = createHash('md5').update(password).digest('hex');
 

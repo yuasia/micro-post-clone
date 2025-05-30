@@ -13,7 +13,7 @@ export async function sendOTPEmail(to: string, otp: string) {
     from: `"MicroPost" <${process.env.SMTP_USER}>`,
     to: to,
     subject: '【MicroPost】Your OTP Code',
-    text: `Your OTP code is: ${otp}. It is valid for 5 minutes.`,
+    text: `Your one time password is: ${otp}. It is valid for 5 minutes.`,
   });
 
   console.log('Message sent: %s', info.messageId);

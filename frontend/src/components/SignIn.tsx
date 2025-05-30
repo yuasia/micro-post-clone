@@ -43,6 +43,7 @@ const SignIn = () => {
         </SLoginButton>
       </SSignInRow>
       <Link to="/signup">アカウントをお持ちでない場合</Link>
+      <Link to="/forgot-password">パスワードを忘れた場合</Link>
     </SSignInFrame>
   );
 };

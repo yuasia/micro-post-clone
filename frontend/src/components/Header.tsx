@@ -120,13 +120,12 @@ const Header = () => {
               <SUserContent>
                 <SUserDialogTitle>User Information</SUserDialogTitle>
                 <SUserDialogContent>
-                  {" "}
-                  <p>User Name</p>
-                  <p>{userName}</p>
-                  <p>Email</p>
-                  <p>{userEmail}</p>
-                  <p>Last Update</p>
-                  <p>{updateDate}</p>
+                  <p className="label">User Name</p>
+                  <p className="value">{userName}</p>
+                  <p className="label">Email</p>
+                  <p className="value">{userEmail}</p>
+                  <p className="label">Last Update</p>
+                  <p className="value">{updateDate}</p>
                 </SUserDialogContent>
               </SUserContent>
             </SUserDialog>
@@ -280,7 +279,21 @@ const SUserDialogContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 16px;
   font-size: 14px;
+  padding: 0 24px;
+  box-sizing: border-box;
+
+  p.label {
+    font-weight: bold;
+    color: #6666ff;
+    margin: 0;
+  }
+
+  p.value {
+    margin: 4px 0;
+    color: #222;
+  }
 `;
 
 const SUserAvatar = styled.img`

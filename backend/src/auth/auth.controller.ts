@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -15,11 +15,13 @@ export class AuthController {
     return await this.authService.verifyOTP(body.user_id, body.otp);
   }
 
-  @Get()
-  async getAuth(
-    @Query('user_id') name: string,
-    @Query('password') password: string,
-  ) {
-    return await this.authService.getAuth(name, password);
+  @Post('request-reset')
+  async requestReset(@Body() body: { email: string }) {
+    return await this.authService.requestReset(body.email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() body: { token: string; password: string }) {
+    return await this.authService.resetPassword(body.token, body.password);
   }
 }

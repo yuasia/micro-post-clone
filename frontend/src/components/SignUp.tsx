@@ -1,7 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { createUser } from "../api/User";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -32,6 +33,19 @@ const SignUp = () => {
 
   return (
     <SContainer>
+      <Link to={"/main"}>
+        {" "}
+        <X
+          style={{
+            position: "absolute",
+            top: 20,
+            right: 20,
+            color: "black",
+            cursor: "pointer",
+          }}
+          size={40}
+        />
+      </Link>
       <SCard>
         <h2>新規登録</h2>
         <SInputForm>
