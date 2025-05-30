@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { login, sign_in } from "../api/Auth";
+import { login } from "../api/Auth";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignIn = () => {
@@ -42,8 +42,8 @@ const SignIn = () => {
           Login
         </SLoginButton>
       </SSignInRow>
-      <Link to="/signup">アカウントをお持ちでない場合</Link>
-      <Link to="/forgot-password">パスワードを忘れた場合</Link>
+      <SLink to="/signup">アカウントをお持ちでない場合</SLink>
+      <SLink to="/forgot-password">パスワードを忘れた場合</SLink>
     </SSignInFrame>
   );
 };
@@ -122,5 +122,16 @@ const SLoginButton = styled.button`
   &:hover {
     background-color: #444444;
     color: white;
+  }
+`;
+
+const SLink = styled(Link)`
+  color: rgb(29, 31, 34);
+  margin-bottom: 16px;
+  text-decoration: none;
+  font-size: 16px;
+
+  &:hover {
+    text-decoration: underline;
   }
 `;

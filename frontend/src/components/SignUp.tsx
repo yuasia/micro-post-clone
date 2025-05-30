@@ -38,8 +38,8 @@ const SignUp = () => {
         <X
           style={{
             position: "absolute",
-            top: 20,
-            right: 20,
+            top: 22,
+            right: 22,
             color: "black",
             cursor: "pointer",
           }}
@@ -47,11 +47,11 @@ const SignUp = () => {
         />
       </Link>
       <SCard>
-        <h2>新規登録</h2>
+        <h2>Sign Up</h2>
         <SInputForm>
           <SInput
             type="text"
-            placeholder="name"
+            placeholder="user name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -126,7 +126,7 @@ const SRButton = styled.button`
   background: white;
   border: 1px solid #444444;
   border-radius: 8px;
-  padding: 10px;
+  padding: 9px;
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
