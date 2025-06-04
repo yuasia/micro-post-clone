@@ -9,14 +9,10 @@ const Post = (props: any) => {
   const { post, onDelete } = props;
 
   useEffect(() => {
-    const updateAvatarUrl = () => {
-      if (userInfo.avatar_url) {
-        setAvatarUrl(userInfo.avatar_url);
-      }
-    };
-
-    updateAvatarUrl();
-  });
+    if (userInfo.avatar_url) {
+      setAvatarUrl(userInfo.avatar_url);
+    }
+  }, [userInfo.avatar_url]);
 
   const getLines = (src: string): ReactNode => {
     return src.split("\n").map((line, index) => {
