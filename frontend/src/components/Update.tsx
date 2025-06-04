@@ -15,7 +15,7 @@ const Update = () => {
   const [showPasswordSection, setShowPasswordSection] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
-  const { userInfo } = useContext(UserContext);
+  const { userInfo, setUserInfo } = useContext(UserContext);
 
   const onUpdate = async () => {
     const payload: any = { token: userInfo.token };
@@ -34,11 +34,27 @@ const Update = () => {
     }
 
     try {
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:3001/user/update",
         payload
       );
       alert("ユーザー情報を更新しました");
+
+      const updated = { ...userInfo };
+      if (name.trim()) {
+        updated.name = name;
+        localStorage.setItem("user_name", name);
+      }
+      if (email.trim()) {
+        updated.email = email;
+        localStorage.setItem("user_email", email);
+      }
+      if (avatarUrl.trim()) {
+        updated.avatar_url = avatarUrl;
+        localStorage.setItem("user_avatar", avatarUrl);
+      }
+      setUserInfo(updated);
+
       // 成功したらフィールドをクリア
       if (newPassword) {
         setNewPassword("");
