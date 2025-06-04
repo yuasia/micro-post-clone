@@ -36,7 +36,7 @@ const Header = () => {
   }, []);
 
   /*
-   * 不要なAPIコールを避けるために、300msの遅延を設けている
+   * 不要なAPIコールを避けるために、500msの遅延を設けている
    */
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -62,6 +62,7 @@ const Header = () => {
         postList.push({
           id: post.id,
           user_name: post.user_name,
+          avatar_url: post.avatar_url,
           content: post.content,
           created_at: new Date(post.created_at).toLocaleString(),
         });

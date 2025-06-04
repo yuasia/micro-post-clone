@@ -25,6 +25,7 @@ const SideBar = () => {
         postList.push({
           id: post.id,
           user_name: post.user_name,
+          avatar_url: post.avatar_url,
           content: post.content,
           created_at: new Date(post.created_at).toLocaleString(),
         });

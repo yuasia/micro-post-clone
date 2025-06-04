@@ -1,22 +1,9 @@
+import React from "react";
+import { ReactNode } from "react";
 import styled from "styled-components";
-import { ReactNode, useEffect } from "react";
-import React, { useContext, useState } from "react";
-import { UserContext } from "../providers/UserProvider";
 
 const Post = (props: any) => {
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const { userInfo } = useContext(UserContext);
   const { post, onDelete } = props;
-
-  useEffect(() => {
-    const updateAvatarUrl = () => {
-      if (userInfo.avatar_url) {
-        setAvatarUrl(userInfo.avatar_url);
-      }
-    };
-
-    updateAvatarUrl();
-  }, [userInfo.avatar_url]);
 
   const getLines = (src: string): ReactNode => {
     return src.split("\n").map((line, index) => {
@@ -38,7 +25,7 @@ const Post = (props: any) => {
       <PPostFrame>
         <div>
           <PPostHeader>
-            <PUserAvatar alt="User Avatar" src={avatarUrl} />
+            <PUserAvatar alt="User Avatar" src={post.avatar_url} />
             <PDate>{post.created_at}</PDate>
           </PPostHeader>
           <div>{getLines(post.content)}</div>{" "}
