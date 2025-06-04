@@ -1,6 +1,6 @@
 import { verifyOTP } from "../api/Auth";
 import { useContext, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../providers/UserProvider";
 import styled from "styled-components";
 
@@ -63,9 +63,9 @@ const VerifyOTP = () => {
   return (
     <div style={{ textAlign: "center", marginTop: "40px" }}>
       <h2>2段階認証コードを入力</h2>
-      <SVOTPFrame>
+      <VFrame>
         {otp.map((digit, index) => (
-          <SVOTPInput
+          <VInput
             key={index}
             type="text"
             inputMode="numeric"
@@ -78,15 +78,19 @@ const VerifyOTP = () => {
             }}
           />
         ))}
-      </SVOTPFrame>
-      <SButton onClick={handleSubmit}>認証</SButton>
+      </VFrame>
+      <VButton onClick={handleSubmit}>認証</VButton>
+      <VDescription>
+        <p>OTPコードが届かない場合は、メールアドレスを確認してください。</p>
+        <VLink to="/">ログイン画面に戻る</VLink>
+      </VDescription>
     </div>
   );
 };
 
 export default VerifyOTP;
 
-const SVOTPFrame = styled.div`
+const VFrame = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,7 +98,7 @@ const SVOTPFrame = styled.div`
   margin: 30px auto;
 `;
 
-const SVOTPInput = styled.input`
+const VInput = styled.input`
   width: 40px;
   height: 40px;
   font-size: 24px;
@@ -103,7 +107,7 @@ const SVOTPInput = styled.input`
   border-radius: 8px;
 `;
 
-const SButton = styled.button`
+const VButton = styled.button`
   padding: 10px 20px;
   font-size: 16px;
   background-color: white;
@@ -117,5 +121,22 @@ const SButton = styled.button`
   &:hover {
     background-color: #444444;
     color: white;
+  }
+`;
+
+const VDescription = styled.div`
+  margin-top: 40px;
+  font-size: 14px;
+  text-align: center;
+`;
+
+const VLink = styled(Link)`
+  color: rgb(29, 31, 34);
+  margin-bottom: 16px;
+  text-decoration: none;
+  font-size: 16px;
+
+  &:hover {
+    text-decoration: underline;
   }
 `;

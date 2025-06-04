@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { ReactNode, useEffect } from "react";
-import { UserContext } from "../providers/UserProvider";
 import React, { useContext, useState } from "react";
+import { UserContext } from "../providers/UserProvider";
 
 const Post = (props: any) => {
   const [avatarUrl, setAvatarUrl] = useState("");
