@@ -7,7 +7,7 @@ export class PostService {
 
   async createPost(message: string, token: string) {
     const now = new Date();
-    const auth = await this.prisma.auth.findUnique({
+    const auth = await this.prisma.auth.findFirst({
       where: {
         token: token,
         expire_at: {
@@ -31,7 +31,7 @@ export class PostService {
   async getList(token: string, start: number, nr_records: number) {
     const now = new Date();
 
-    const auth = await this.prisma.auth.findUnique({
+    const auth = await this.prisma.auth.findFirst({
       where: {
         token: token,
         expire_at: {
@@ -44,12 +44,7 @@ export class PostService {
       throw new ForbiddenException();
     }
 
-    console.log('auth', auth);
-
     const qb = await this.prisma.microPost.findMany({
-      where: {
-        user_id: auth.user_id,
-      },
       orderBy: {
         created_at: 'desc',
       },
@@ -94,7 +89,6 @@ export class PostService {
 
     const qb = await this.prisma.microPost.findMany({
       where: {
-        user_id: auth.user_id,
         content: {
           contains: search,
           mode: 'insensitive',
@@ -121,8 +115,6 @@ export class PostService {
       };
     });
 
-    console.log(records);
-
     return records;
   }
 
@@ -142,14 +134,9 @@ export class PostService {
       throw new ForbiddenException();
     }
 
-    const count = await this.prisma.microPost.count({
-      where: {
-        user_id: auth.user_id,
-      },
-    });
+    const count = await this.prisma.microPost.count();
 
     return count;
-    console.log('count', count);
   }
 
   async deletePost(id: string, token: string) {

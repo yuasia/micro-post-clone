@@ -28,8 +28,6 @@ const Header = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      console.log("userInfo", userInfo);
-
       const user = await getUser(userInfo.id, userInfo.token);
       setAvatarUrl(user.avatar_url);
     };
@@ -74,10 +72,13 @@ const Header = () => {
   };
 
   const logout = () => {
-    setUserInfo({ id: 0, token: "" });
+    setUserInfo({ id: 0, token: "", name: "", email: "", avatar_url: "" });
     navigate("/");
     localStorage.removeItem("token");
     localStorage.removeItem("user_id");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("user_avatar");
   };
 
   useEffect(() => {
@@ -131,11 +132,7 @@ const Header = () => {
             </SUserDialog>
           )}
           <SUserNameLink to={"/update"}>
-            <SUserAvatar
-              alt="User Avatar"
-              src={avatarUrl}
-              style={{ width: "44px", height: "44px", borderRadius: "50%" }}
-            />
+            <SUserAvatar alt="User Avatar" src={avatarUrl} />
           </SUserNameLink>
         </SUserInfoContainer>
         <SLogoutButton onClick={logout}>Logout</SLogoutButton>

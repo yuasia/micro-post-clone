@@ -130,7 +130,7 @@ const SUInput = styled.input`
   width: 100%;
   border: 1px solid #ddd;
   border-radius: 18px;
-  font-size: 16px;
+  font-size: 15px;
   transition: all 0.2s ease;
 
   &:focus {

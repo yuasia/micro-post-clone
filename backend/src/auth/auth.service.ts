@@ -61,6 +61,9 @@ export class AuthService {
     const ret = {
       token: '',
       user_id: user.id,
+      name: user.name,
+      email: user.email,
+      avatar_url: user.avatar_url,
     };
 
     var expire = new Date();

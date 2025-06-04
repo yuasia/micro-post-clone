@@ -1,9 +1,22 @@
-import React from "react";
-import { ReactNode } from "react";
 import styled from "styled-components";
+import { ReactNode, useEffect } from "react";
+import { UserContext } from "../providers/UserProvider";
+import React, { useContext, useState } from "react";
 
 const Post = (props: any) => {
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const { userInfo } = useContext(UserContext);
   const { post, onDelete } = props;
+
+  useEffect(() => {
+    const updateAvatarUrl = () => {
+      if (userInfo.avatar_url) {
+        setAvatarUrl(userInfo.avatar_url);
+      }
+    };
+
+    updateAvatarUrl();
+  });
 
   const getLines = (src: string): ReactNode => {
     return src.split("\n").map((line, index) => {
@@ -21,55 +34,50 @@ const Post = (props: any) => {
   };
 
   return (
-    <SPostCard>
-      <SPostFrame>
+    <PPostCard>
+      <PPostFrame>
         <div>
-          <SPostHeader>
-            <SName>{post.user_name}</SName>
-            <SDate>{post.created_at}</SDate>
-          </SPostHeader>
+          <PPostHeader>
+            <PUserAvatar alt="User Avatar" src={avatarUrl} />
+            <PDate>{post.created_at}</PDate>
+          </PPostHeader>
           <div>{getLines(post.content)}</div>{" "}
         </div>
-        <SDeleteButton onClick={handleDelete}>削除</SDeleteButton>
-      </SPostFrame>
-    </SPostCard>
+        <PDeleteButton onClick={handleDelete}>削除</PDeleteButton>
+      </PPostFrame>
+    </PPostCard>
   );
 };
 
 export default Post;
 
-const SPostCard = styled.div`
+const PPostCard = styled.div`
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ccc;
 `;
 
-const SPostFrame = styled.div`
+const PPostFrame = styled.div`
   display: flex;
   justify-content: space-between;
   padding-right: 60px;
   align-items: center;
 `;
 
-const SPostHeader = styled.div`
+const PPostHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 `;
 
-const SName = styled.span`
-  font-size: small;
-  color: #000044;
-`;
-
-const SDate = styled.span`
+const PDate = styled.span`
   margin-left: 8px;
   font-size: small;
   color: #000044;
 `;
 
-const SDeleteButton = styled.button`
+const PDeleteButton = styled.button`
   background:white;
   color: #444444;
   width: 60px;
@@ -87,3 +95,11 @@ const SDeleteButton = styled.button`
     color: white;
     }
   `;
+
+const PUserAvatar = styled.img`
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: border 0.2s ease, box-shadow 0.2 ease;
+`;

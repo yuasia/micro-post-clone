@@ -41,6 +41,11 @@ const VerifyOTP = () => {
       if (res && res.token) {
         localStorage.setItem("token", res.token);
         localStorage.setItem("user_id", res.user_id);
+        localStorage.setItem("user_name", res.user_name);
+        localStorage.setItem("user_email", res.user_email);
+        localStorage.setItem("user_avatar", res.avatar_url);
+        localStorage.removeItem("temp_user_id");
+
         setUserInfo({
           ...userInfo,
           id: res.user_id,
