@@ -19,7 +19,7 @@ const Update = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
 
-  const { userInfo } = useContext(UserContext);
+  const { userInfo, setUserInfo } = useContext(UserContext);
   const navigate = useNavigate();
 
   const onUpdate = async () => {
@@ -39,11 +39,24 @@ const Update = () => {
     }
 
     try {
-      const res = await axios.post(
-        "http://localhost:3001/user/update",
-        payload
-      );
+      await axios.post("http://localhost:3001/user/update", payload);
       alert("ユーザー情報を更新しました");
+
+      const updated = { ...userInfo };
+      if (name.trim()) {
+        updated.name = name;
+        localStorage.setItem("user_name", name);
+      }
+      if (email.trim()) {
+        updated.email = email;
+        localStorage.setItem("user_email", email);
+      }
+      if (avatarUrl.trim()) {
+        updated.avatar_url = avatarUrl;
+        localStorage.setItem("user_avatar", avatarUrl);
+      }
+      setUserInfo(updated);
+
       // 成功したらフィールドをクリア
       if (newPassword) {
         setNewPassword("");
@@ -51,6 +64,7 @@ const Update = () => {
         setShowPasswordSection(false);
       }
       setPasswordError("");
+      navigate("/main");
     } catch (err: any) {
       console.error("更新失敗", err);
       if (err.response?.data?.message?.includes("password")) {

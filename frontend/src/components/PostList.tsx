@@ -51,7 +51,7 @@ const PostList = () => {
 
   return (
     <SPostList>
-      <SPostTitle>Post List</SPostTitle>
+      <SPostTitle>投稿一覧</SPostTitle>
       {postList.map((post: PostType) => (
         <Post key={post.id} post={post} onDelete={handleDelete} />
       ))}
