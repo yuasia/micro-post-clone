@@ -157,4 +157,60 @@ export class UserService {
       },
     };
   }
+
+  async deleteUser(token: string, password: string) {
+    const now = new Date();
+
+    const auth = await this.prisma.auth.findFirst({
+      where: {
+        token,
+        expire_at: {
+          gt: now,
+        },
+      },
+    });
+
+    if (!auth) {
+      throw new ForbiddenException();
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: auth.user_id,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    const hash = crypto.createHash('md5').update(password).digest('hex');
+
+    if (hash !== user.hash) {
+      throw new ForbiddenException('password is invalid');
+    }
+
+    await this.prisma.microPost.deleteMany({
+      where: {
+        user_id: user.id,
+      },
+    });
+
+    await this.prisma.user.delete({
+      where: {
+        id: user.id,
+      },
+    });
+
+    await this.prisma.auth.delete({
+      where: {
+        user_id: user.id,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'user and all related data are deleted',
+    };
+  }
 }

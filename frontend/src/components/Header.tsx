@@ -71,6 +71,11 @@ const Header = () => {
     }
   };
 
+  const handleAccountManagement = () => {
+    navigate("/update");
+    setShowDialog(false);
+  };
+
   const logout = () => {
     setUserInfo({ id: 0, token: "", name: "", email: "", avatar_url: "" });
     navigate("/");
@@ -121,13 +126,22 @@ const Header = () => {
               <SUserContent>
                 <SUserDialogTitle>User Information</SUserDialogTitle>
                 <SUserDialogContent>
-                  <p className="label">User Name</p>
-                  <p className="value">{userName}</p>
-                  <p className="label">Email</p>
-                  <p className="value">{userEmail}</p>
-                  <p className="label">Last Update</p>
-                  <p className="value">{updateDate}</p>
+                  <SContentItem>
+                    <p className="label">User Name</p>
+                    <p className="value">{userName}</p>
+                  </SContentItem>
+                  <SContentItem>
+                    <p className="label">Email</p>
+                    <p className="value">{userEmail}</p>
+                  </SContentItem>
+                  <SContentItem>
+                    <p className="label">Last Update</p>
+                    <p className="value">{updateDate}</p>
+                  </SContentItem>
                 </SUserDialogContent>
+                <SAccountButton onClick={handleAccountManagement}>
+                  Manage Account
+                </SAccountButton>
               </SUserContent>
             </SUserDialog>
           )}
@@ -224,7 +238,7 @@ const SUserInfoContainer = styled.div`
 
 const SUserDialog = styled.div`
   position: absolute;
-  top: 60px;
+  top: 50px;
   right: 0;
   height: 400px;
   width: 400px;
@@ -233,7 +247,6 @@ const SUserDialog = styled.div`
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   padding 20px;
-  gap: 20px;
   z-index: 10;
   animation: fadeIn 0.2s ease-in-out;
 
@@ -258,7 +271,7 @@ const SUserContent = styled.div`
 const SUserDialogTitle = styled.p`
   font-size: 22px;
   font-weight: bold;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   color: #333;
 
   &::after {
@@ -276,20 +289,27 @@ const SUserDialogContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   font-size: 14px;
-  padding: 0 24px;
   box-sizing: border-box;
+`;
+
+const SContentItem = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 
   p.label {
     font-weight: bold;
     color: #6666ff;
-    margin: 0;
+    margin-bottom: 4px;
   }
 
   p.value {
-    margin: 4px 0;
     color: #222;
+    margin: 0;
   }
 `;
 
@@ -304,5 +324,25 @@ const SUserAvatar = styled.img`
   &:hover {
     border: 2px solid #6666ff;
     box-shadow: 0 0 5px rgba(102, 102, 255, 0.5);
+  }
+`;
+
+const SAccountButton = styled.button`
+  margin-top: 30px;
+  width: 180px;
+  height: 44px;
+  border: 1px solid #444444;
+  border-radius: 16px;
+  color: #444444;
+  background: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #444444;
+    color: white;
+    border: 1px solid #6666ff;
   }
 `;

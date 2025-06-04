@@ -25,4 +25,12 @@ export class UserController {
     const user_id = parseInt(id, 10);
     return await this.userService.getUser(token, user_id);
   }
+
+  @Post('delete')
+  async deleteUser(
+    @Body('token') token: string,
+    @Body('password') password: string,
+  ) {
+    return await this.userService.deleteUser(token, password);
+  }
 }

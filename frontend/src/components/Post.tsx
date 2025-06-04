@@ -16,7 +16,7 @@ const Post = (props: any) => {
     };
 
     updateAvatarUrl();
-  });
+  }, []);
 
   const getLines = (src: string): ReactNode => {
     return src.split("\n").map((line, index) => {
