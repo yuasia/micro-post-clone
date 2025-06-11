@@ -3,12 +3,16 @@ import { useContext, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../providers/UserProvider";
 import styled from "styled-components";
+import axios from "axios";
+import Toast from "./Toast";
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState(Array(6).fill(""));
+  const [toast, setToast] = useState({ show: false, message: "" });
+
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const navigate = useNavigate();
   const { userInfo, setUserInfo } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return; // 数字のみ許可
@@ -55,34 +59,56 @@ const VerifyOTP = () => {
           navigate("/main");
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("OTP verification failed: ", error);
+
+      if (axios.isAxiosError(error)) {
+        const errorMsg =
+          error.response?.data?.message || "OTP認証に失敗しました";
+        setToast({ show: true, message: errorMsg });
+      } else {
+        setToast({
+          show: true,
+          message: "予期しないエラーが発生しました。もう一度お試しください。",
+        });
+      }
+    }
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "40px" }}>
-      <h2>2段階認証コードを入力</h2>
-      <VFrame>
-        {otp.map((digit, index) => (
-          <VInput
-            key={index}
-            type="text"
-            inputMode="numeric"
-            maxLength={1}
-            value={digit}
-            onChange={(e) => handleChange(index, e.target.value)}
-            onKeyDown={(e) => handleKeyDown(index, e)}
-            ref={(el) => {
-              inputRefs.current[index] = el;
-            }}
-          />
-        ))}
-      </VFrame>
-      <VButton onClick={handleSubmit}>認証</VButton>
-      <VDescription>
-        <p>OTPコードが届かない場合は、メールアドレスを確認してください。</p>
-        <VLink to="/">ログイン画面に戻る</VLink>
-      </VDescription>
-    </div>
+    <>
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          onClose={() => setToast({ show: false, message: "" })}
+        />
+      )}
+
+      <div style={{ textAlign: "center", marginTop: "40px" }}>
+        <h2>2段階認証コードを入力</h2>
+        <VFrame>
+          {otp.map((digit, index) => (
+            <VInput
+              key={index}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
+            />
+          ))}
+        </VFrame>
+        <VButton onClick={handleSubmit}>認証</VButton>
+        <VDescription>
+          <p>OTPコードが届かない場合は、メールアドレスを確認してください。</p>
+          <VLink to="/">ログイン画面に戻る</VLink>
+        </VDescription>
+      </div>
+    </>
   );
 };
 

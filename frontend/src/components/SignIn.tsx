@@ -3,11 +3,13 @@ import styled from "styled-components";
 import { login } from "../api/Auth";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Toast from "./Toast";
 
 const SignIn = () => {
   const navigate = useNavigate();
   const [pass, setPass] = useState("");
   const [email, setEmail] = useState("");
+  const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
 
   const onSignInClick = async () => {
@@ -25,9 +27,12 @@ const SignIn = () => {
       if (axios.isAxiosError(error)) {
         const errorMsg =
           error.response?.data?.message || "ログインに失敗しました";
-        alert(errorMsg);
+        setToast({ show: true, message: errorMsg });
       } else {
-        alert("予期しないエラーが発生しました。もう一度お試しください。");
+        setToast({
+          show: true,
+          message: "予期しないエラーが発生しました。もう一度お試しください。",
+        });
       }
     } finally {
       setIsLoading(false);
@@ -35,38 +40,46 @@ const SignIn = () => {
   };
 
   return (
-    <SSignInFrame>
-      <SignInTitle>Micro Post</SignInTitle>
-      <SSignInRow>
-        <SSignInLabel htmlFor="id">email</SSignInLabel>
-        <SSignInInput
-          id="id"
-          value={email}
-          type="text"
-          onChange={(e) => setEmail(e.target.value)}
+    <>
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          onClose={() => setToast({ show: false, message: "" })}
         />
-      </SSignInRow>
-      <SSignInRow>
-        <SSignInLabel htmlFor="pwd">password</SSignInLabel>
-        <SSignInInput
-          id="pwd"
-          value={pass}
-          type="password"
-          onChange={(e) => setPass(e.target.value)}
-        />
-      </SSignInRow>
-      <SSignInRow>
-        <SLoginButton
-          type="button"
-          onClick={onSignInClick}
-          disabled={isLoading}
-        >
-          {isLoading ? "ログイン中..." : "ログイン"}
-        </SLoginButton>
-      </SSignInRow>
-      <SLink to="/signup">アカウントをお持ちでない場合</SLink>
-      <SLink to="/forgot-password">パスワードを忘れた場合</SLink>
-    </SSignInFrame>
+      )}
+      <SSignInFrame>
+        <SignInTitle>Micro Post</SignInTitle>
+        <SSignInRow>
+          <SSignInLabel htmlFor="id">email</SSignInLabel>
+          <SSignInInput
+            id="id"
+            value={email}
+            type="text"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </SSignInRow>
+        <SSignInRow>
+          <SSignInLabel htmlFor="pwd">password</SSignInLabel>
+          <SSignInInput
+            id="pwd"
+            value={pass}
+            type="password"
+            onChange={(e) => setPass(e.target.value)}
+          />
+        </SSignInRow>
+        <SSignInRow>
+          <SLoginButton
+            type="button"
+            onClick={onSignInClick}
+            disabled={isLoading}
+          >
+            {isLoading ? "ログイン中..." : "ログイン"}
+          </SLoginButton>
+        </SSignInRow>
+        <SLink to="/signup">アカウントをお持ちでない場合</SLink>
+        <SLink to="/forgot-password">パスワードを忘れた場合</SLink>
+      </SSignInFrame>
+    </>
   );
 };
 
@@ -149,6 +162,7 @@ const SLoginButton = styled.button`
   &:disabled {
     background-color: #cccccc;
     color: #666666;
+    border-color: #999999;
     cursor: not-allowed;
   }
 `;
