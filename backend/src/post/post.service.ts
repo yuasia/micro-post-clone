@@ -63,6 +63,7 @@ export class PostService {
     const records = qb.map((post) => {
       return {
         id: post.id,
+        user_id: post.user_id,
         content: post.content,
         user_name: post.user.name,
         avatar_url: post.user.avatar_url,
@@ -112,6 +113,7 @@ export class PostService {
     const records = qb.map((post) => {
       return {
         id: post.id,
+        user_id: post.user_id,
         content: post.content,
         user_name: post.user.name,
         avatar_url: post.user.avatar_url,

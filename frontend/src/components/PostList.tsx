@@ -26,6 +26,7 @@ const PostList = () => {
       posts.forEach((post: PostType) => {
         postList.push({
           id: post.id,
+          user_id: post.user_id,
           user_name: post.user_name,
           avatar_url: post.avatar_url,
           content: post.content,

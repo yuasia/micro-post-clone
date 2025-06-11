@@ -1,11 +1,11 @@
 import axios from "axios";
 import { X } from "lucide-react";
 import styled from "styled-components";
+import { deleteUser } from "../api/User";
 import UploadWidget from "./UploadWidget";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../providers/UserProvider";
-import { deleteUser } from "../api/User";
 
 const Update = () => {
   const [name, setName] = useState("");
