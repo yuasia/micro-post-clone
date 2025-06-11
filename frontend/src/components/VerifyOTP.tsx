@@ -35,29 +35,27 @@ const VerifyOTP = () => {
     const userId = localStorage.getItem("temp_user_id");
     const otpString = otp.join("");
 
-    if (userId && otpString.length === 6) {
-      const res = await verifyOTP(parseInt(userId, 10), otpString);
+    try {
+      if (userId && otpString.length === 6) {
+        const res = await verifyOTP(parseInt(userId, 10), otpString);
 
-      if (res && res.token) {
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("user_id", res.user_id);
-        localStorage.setItem("user_name", res.user_name);
-        localStorage.setItem("user_email", res.user_email);
-        localStorage.setItem("user_avatar", res.avatar_url);
-        localStorage.removeItem("temp_user_id");
+        if (res && res.token) {
+          localStorage.setItem("token", res.token);
+          localStorage.setItem("user_id", res.user_id);
+          localStorage.setItem("user_name", res.user_name);
+          localStorage.setItem("user_email", res.user_email);
+          localStorage.setItem("user_avatar", res.avatar_url);
+          localStorage.removeItem("temp_user_id");
 
-        setUserInfo({
-          ...userInfo,
-          id: res.user_id,
-          token: res.token,
-        });
-        navigate("/main");
-      } else {
-        alert("OTP verification failed");
+          setUserInfo({
+            ...userInfo,
+            id: res.user_id,
+            token: res.token,
+          });
+          navigate("/main");
+        }
       }
-    } else {
-      alert("6桁のコードを入力してください");
-    }
+    } catch (error) {}
   };
 
   return (
@@ -131,7 +129,7 @@ const VDescription = styled.div`
 `;
 
 const VLink = styled(Link)`
-  color: rgb(29, 31, 34);
+  color: #3498db;
   margin-bottom: 16px;
   text-decoration: none;
   font-size: 16px;

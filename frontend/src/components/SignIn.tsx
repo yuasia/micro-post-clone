@@ -8,15 +8,15 @@ const SignIn = () => {
   const navigate = useNavigate();
   const [pass, setPass] = useState("");
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSignInClick = async () => {
-    const ret = await login(email, pass);
-
     try {
+      setIsLoading(true);
       const ret = await login(email, pass);
 
       if (ret.data.require_otp) {
-        localStorage.setItem("user_id", ret.data.user_id);
+        localStorage.setItem("temp_user_id", ret.data.user_id);
         navigate("/verify_otp");
       }
     } catch (error) {
@@ -29,6 +29,8 @@ const SignIn = () => {
       } else {
         alert("予期しないエラーが発生しました。もう一度お試しください。");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,17 +47,21 @@ const SignIn = () => {
         />
       </SSignInRow>
       <SSignInRow>
-        <SSignInLabel htmlFor="id">password</SSignInLabel>
+        <SSignInLabel htmlFor="pwd">password</SSignInLabel>
         <SSignInInput
-          id="password"
+          id="pwd"
           value={pass}
           type="password"
           onChange={(e) => setPass(e.target.value)}
         />
       </SSignInRow>
       <SSignInRow>
-        <SLoginButton type="button" onClick={onSignInClick}>
-          Login
+        <SLoginButton
+          type="button"
+          onClick={onSignInClick}
+          disabled={isLoading}
+        >
+          {isLoading ? "ログイン中..." : "ログイン"}
         </SLoginButton>
       </SSignInRow>
       <SLink to="/signup">アカウントをお持ちでない場合</SLink>
@@ -139,10 +145,16 @@ const SLoginButton = styled.button`
     background-color: #444444;
     color: white;
   }
+
+  &:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+  }
 `;
 
 const SLink = styled(Link)`
-  color: rgb(29, 31, 34);
+  color: #3498db;
   margin-bottom: 16px;
   text-decoration: none;
   font-size: 16px;
@@ -151,3 +163,20 @@ const SLink = styled(Link)`
     text-decoration: underline;
   }
 `;
+
+const SErrorMessage = styled.div`
+  color: #e74c3c
+  background-color: #fdecea;
+  border-left; 4px solid #e74c3c
+  padding; 12px 16px;
+  margin: 15px 0;
+  border-radius: 4px;
+  font-size: 4px;
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0; transform: translateY(-10px);}}
+    to {
+      opacity: 1; transform: translateY(0);}}
+  `;
