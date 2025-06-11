@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 
 export type PostType = {
+  user_id: number;
   id: number;
   user_name: string;
   avatar_url: string;

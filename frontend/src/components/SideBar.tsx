@@ -23,6 +23,7 @@ const SideBar = () => {
       console.log(posts);
       posts.forEach((post: any) => {
         postList.push({
+          user_id: post.user_id,
           id: post.id,
           user_name: post.user_name,
           avatar_url: post.avatar_url,

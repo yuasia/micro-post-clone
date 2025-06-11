@@ -60,6 +60,7 @@ const Header = () => {
     if (posts) {
       posts.forEach((post: PostType) => {
         postList.push({
+          user_id: post.user_id,
           id: post.id,
           user_name: post.user_name,
           avatar_url: post.avatar_url,

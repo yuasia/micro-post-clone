@@ -1,9 +1,11 @@
 import styled from "styled-components";
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import React from "react";
+import { UserContext } from "../providers/UserProvider";
 
 const Post = (props: any) => {
   const { post, onDelete } = props;
+  const { userInfo } = useContext(UserContext);
 
   const getLines = (src: string): ReactNode => {
     return src.split("\n").map((line, index) => {
@@ -30,7 +32,9 @@ const Post = (props: any) => {
           </PPostHeader>
           <div>{getLines(post.content)}</div>{" "}
         </div>
-        <PDeleteButton onClick={handleDelete}>削除</PDeleteButton>
+        {post.user_id === userInfo.id && (
+          <PDeleteButton onClick={handleDelete}>削除</PDeleteButton>
+        )}
       </PPostFrame>
     </PPostCard>
   );
