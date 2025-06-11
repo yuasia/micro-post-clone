@@ -6,7 +6,7 @@ export const login = async (email: string, password: string) => {
     email,
     password,
   });
-  return res.data;
+  return res;
 };
 
 export const verifyOTP = async (user_id: number, otp: string) => {

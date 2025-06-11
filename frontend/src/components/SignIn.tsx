@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { login } from "../api/Auth";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -10,9 +11,24 @@ const SignIn = () => {
 
   const onSignInClick = async () => {
     const ret = await login(email, pass);
-    if (ret && ret.require_otp) {
-      localStorage.setItem("temp_user_id", ret.user_id);
-      navigate("/verify_otp");
+
+    try {
+      const ret = await login(email, pass);
+
+      if (ret.data.require_otp) {
+        localStorage.setItem("user_id", ret.data.user_id);
+        navigate("/verify_otp");
+      }
+    } catch (error) {
+      console.error("Login failed: ", error);
+
+      if (axios.isAxiosError(error)) {
+        const errorMsg =
+          error.response?.data?.message || "ログインに失敗しました";
+        alert(errorMsg);
+      } else {
+        alert("予期しないエラーが発生しました。もう一度お試しください。");
+      }
     }
   };
 
