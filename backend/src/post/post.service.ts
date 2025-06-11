@@ -54,6 +54,7 @@ export class PostService {
         user: {
           select: {
             name: true,
+            avatar_url: true,
           },
         },
       },
@@ -64,6 +65,7 @@ export class PostService {
         id: post.id,
         content: post.content,
         user_name: post.user.name,
+        avatar_url: post.user.avatar_url,
         created_at: post.created_at,
       };
     });
@@ -101,6 +103,7 @@ export class PostService {
         user: {
           select: {
             name: true,
+            avatar_url: true,
           },
         },
       },
@@ -111,6 +114,7 @@ export class PostService {
         id: post.id,
         content: post.content,
         user_name: post.user.name,
+        avatar_url: post.user.avatar_url,
         created_at: post.created_at,
       };
     });
