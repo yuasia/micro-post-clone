@@ -177,20 +177,3 @@ const SLink = styled(Link)`
     text-decoration: underline;
   }
 `;
-
-const SErrorMessage = styled.div`
-  color: #e74c3c
-  background-color: #fdecea;
-  border-left; 4px solid #e74c3c
-  padding; 12px 16px;
-  margin: 15px 0;
-  border-radius: 4px;
-  font-size: 4px;
-  animation: fadeIn 0.3s ease-in-out;
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0; transform: translateY(-10px);}}
-    to {
-      opacity: 1; transform: translateY(0);}}
-  `;

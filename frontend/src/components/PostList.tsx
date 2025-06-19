@@ -1,7 +1,7 @@
 import Post from "./Post";
 import { deletePost, getList, getPostCount } from "../api/Post";
 import styled from "styled-components";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
 import { PostListContext, PostType } from "../providers/PostListProvider";
 import { PageContext } from "../providers/pageProvider";
@@ -15,7 +15,7 @@ const PostList = () => {
   const { page, setPage } = useContext(PageContext);
   const { postList, setPostList } = useContext(PostListContext);
 
-  const getPostList = async () => {
+  const getPostList = useCallback(async () => {
     const start = (page - 1) * postsPerPage;
     const posts = await getList(userInfo.token, start, postsPerPage);
     const postCount = await getPostCount(userInfo.token);
@@ -36,7 +36,7 @@ const PostList = () => {
 
       setPostList(postList);
     }
-  };
+  }, [userInfo.token, page, setPostList]);
 
   const handleDelete = async (id: number) => {
     const confirm = window.confirm("本当にこの投稿を削除しましすか？");
@@ -49,7 +49,7 @@ const PostList = () => {
 
   useEffect(() => {
     getPostList();
-  }, [page]);
+  }, [getPostList]);
 
   return (
     <SPostList>

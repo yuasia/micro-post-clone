@@ -4,11 +4,10 @@ import styled from "styled-components";
 import { getList, getSearchList } from "../api/Post";
 import { Link, useNavigate } from "react-router-dom";
 import { PageContext } from "../providers/pageProvider";
-import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../providers/UserProvider";
 import { SearchContext } from "../providers/SearchProvider";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { PostListContext, PostType } from "../providers/PostListProvider";
-import { get } from "http";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -33,7 +32,7 @@ const Header = () => {
     };
 
     fetchUserInfo();
-  }, []);
+  }, [userInfo.id, userInfo.token]);
 
   /*
    * 不要なAPIコールを避けるために、500msの遅延を設けている
@@ -48,7 +47,7 @@ const Header = () => {
     };
   }, [inputText]);
 
-  const getSearchedPost = async () => {
+  const getSearchedPost = useCallback(async () => {
     let posts = await getSearchList(userInfo.token, searchText);
 
     if (!searchText) {
@@ -71,7 +70,7 @@ const Header = () => {
 
       setPostList(postList);
     }
-  };
+  }, [userInfo.token, searchText, page, setPostList]);
 
   const handleAccountManagement = () => {
     navigate("/update");
@@ -97,11 +96,11 @@ const Header = () => {
     };
 
     myGetUser();
-  }, []);
+  }, [userInfo.id, userInfo.token]);
 
   useEffect(() => {
     getSearchedPost();
-  }, [searchText]);
+  }, [searchText, getSearchedPost]);
 
   return (
     <SHeader>
