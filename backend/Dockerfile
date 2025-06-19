@@ -11,6 +11,6 @@ COPY . .
 
 RUN apt-get update && apt-get install -y openssl && npx prisma generate && apt-get install -y curl
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["npm", "run", "start:dev"]

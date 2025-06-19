@@ -105,7 +105,7 @@ const Header = () => {
 
   return (
     <SHeader>
-      <SLogo>MicroPost</SLogo>
+      <SLogo to="/main">MicroPost</SLogo>
       <SSearchWrapper>
         <SSearchIcon>
           <Search />
@@ -170,9 +170,12 @@ const SHeader = styled.div`
   font-weight: bold;
 `;
 
-const SLogo = styled.div`
+const SLogo = styled(Link)`
   font-size: 24px;
   font-weight: 700;
+  color: #444444;
+  cursor: pointer;
+  text-decoration: none;
 `;
 
 const SUserInfo = styled.div`
