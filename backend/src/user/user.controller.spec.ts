@@ -10,6 +10,8 @@ describe('UserController', () => {
   const mockUserService = {
     getUser: jest.fn(),
     createUser: jest.fn(),
+    updateUser: jest.fn(),
+    deleteUser: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -27,12 +29,16 @@ describe('UserController', () => {
     service = module.get<UserService>(UserService);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('getUser', () => {
     it('should return a user', async () => {
       const mockUser = { id: 1, name: 'John' };
       mockUserService.getUser.mockResolvedValue(mockUser);
 
-      const result = await controller.getUser(1, 'xxx-xxx-xxx');
+      const result = await controller.getUser('1', 'xxx-xxx-xxx');
       expect(service.getUser).toHaveBeenCalledWith('xxx-xxx-xxx', 1);
       expect(result).toEqual(mockUser);
     });
@@ -43,9 +49,37 @@ describe('UserController', () => {
       const name = 'Alice';
       const email = 'alice@example.com';
       const password = 'password123';
+      mockUserService.createUser.mockResolvedValue({ id: 1 });
 
-      await controller.createUser(name, email, password);
+      const result = await controller.createUser(name, email, password);
       expect(service.createUser).toHaveBeenCalledWith(name, email, password);
+      expect(result).toEqual({ id: 1 });
+    });
+  });
+
+  describe('updateUser', () => {
+    it('should call updateUser and return update user', async () => {
+      const token = 'xxx-xxx-xxx';
+      const dto = { name: 'Bob' } as any;
+      const updated = { id: 1, name: 'Bob' };
+      mockUserService.updateUser.mockResolvedValue(updated);
+
+      const result = await controller.updateUser(token, dto);
+      expect(service.updateUser).toHaveBeenCalledWith(token, dto);
+      expect(result).toEqual(updated);
+    });
+  });
+
+  describe('deleteUser', () => {
+    it('should call deleteUser and return result', async () => {
+      const token = 'xxx-xxx-xxx';
+      const password = 'password123';
+      const deleted = { success: true };
+      mockUserService.deleteUser.mockResolvedValue(deleted);
+
+      const result = await controller.deleteUser(token, password);
+      expect(service.deleteUser).toHaveBeenCalledWith(token, password);
+      expect(result).toEqual(deleted);
     });
   });
 });
