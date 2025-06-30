@@ -18,12 +18,6 @@ export const verifyOTP = async (user_id: number, otp: string) => {
   return res.data;
 };
 
-export const sign_in = async (user_id: string, password: string) => {
-  const url = `http://localhost:3001/auth?user_id=${user_id}&password=${password}`;
-  const res = await axios.get(url);
-  return res.data;
-};
-
 export const requestPasswordReset = async (email: string) => {
   const url = "http://localhost:3001/auth/request-reset";
   const res = await axios.post(url, {

@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ERROR_MESSAGES } from 'src/common/constants/error-messages';
+import {
+  AuthenticationException,
+  DatabaseException,
+} from 'src/common/exceptions/app.exception';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -17,7 +22,7 @@ export class PostService {
     });
 
     if (!auth) {
-      throw new ForbiddenException();
+      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
     }
 
     const record = {
@@ -25,7 +30,14 @@ export class PostService {
       content: message,
     };
 
-    await this.prisma.microPost.create({ data: record });
+    try {
+      await this.prisma.microPost.create({ data: record });
+    } catch (error) {
+      throw new DatabaseException(
+        ERROR_MESSAGES.DATABASE.POST.CREATION_FAILED,
+        error,
+      );
+    }
   }
 
   async getList(token: string, start: number, nr_records: number) {
@@ -41,37 +53,40 @@ export class PostService {
     });
 
     if (!auth) {
-      throw new ForbiddenException();
+      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
     }
 
-    const qb = await this.prisma.microPost.findMany({
-      orderBy: {
-        created_at: 'desc',
-      },
-      skip: start,
-      take: nr_records,
-      include: {
-        user: {
-          select: {
-            name: true,
-            avatar_url: true,
+    try {
+      const qb = await this.prisma.microPost.findMany({
+        skip: start,
+        take: nr_records,
+        orderBy: {
+          created_at: 'desc',
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              avatar_url: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    const records = qb.map((post) => {
-      return {
+      return qb.map((post) => ({
         id: post.id,
         user_id: post.user_id,
         content: post.content,
         user_name: post.user.name,
         avatar_url: post.user.avatar_url,
         created_at: post.created_at,
-      };
-    });
-
-    return records;
+      }));
+    } catch (error) {
+      throw new DatabaseException(
+        ERROR_MESSAGES.DATABASE.POST.FETCH_FAILED,
+        error,
+      );
+    }
   }
 
   async getSearchList(token: string, search: string) {
@@ -87,41 +102,44 @@ export class PostService {
     });
 
     if (!auth) {
-      throw new ForbiddenException();
+      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
     }
 
-    const qb = await this.prisma.microPost.findMany({
-      where: {
-        content: {
-          contains: search,
-          mode: 'insensitive',
-        },
-      },
-      orderBy: {
-        created_at: 'desc',
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-            avatar_url: true,
+    try {
+      const qb = await this.prisma.microPost.findMany({
+        where: {
+          content: {
+            contains: search,
+            mode: 'insensitive',
           },
         },
-      },
-    });
+        orderBy: {
+          created_at: 'desc',
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              avatar_url: true,
+            },
+          },
+        },
+      });
 
-    const records = qb.map((post) => {
-      return {
+      return qb.map((post) => ({
         id: post.id,
         user_id: post.user_id,
         content: post.content,
         user_name: post.user.name,
         avatar_url: post.user.avatar_url,
         created_at: post.created_at,
-      };
-    });
-
-    return records;
+      }));
+    } catch (error) {
+      throw new DatabaseException(
+        ERROR_MESSAGES.DATABASE.POST.FETCH_FAILED,
+        error,
+      );
+    }
   }
 
   async getPostCount(token: string) {
@@ -137,7 +155,7 @@ export class PostService {
     });
 
     if (!auth) {
-      throw new ForbiddenException();
+      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
     }
 
     const count = await this.prisma.microPost.count();
@@ -158,25 +176,20 @@ export class PostService {
     });
 
     if (!auth) {
-      throw new ForbiddenException();
+      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
     }
 
-    const post = await this.prisma.microPost.findUnique({
-      where: {
-        id: parseInt(id, 10),
-      },
-    });
-
-    if (!post || post.user_id !== auth.user_id) {
-      throw new ForbiddenException(
-        'You are not authorized to delete this post',
+    try {
+      return await this.prisma.microPost.delete({
+        where: {
+          id: parseInt(id, 10),
+        },
+      });
+    } catch (error) {
+      throw new DatabaseException(
+        ERROR_MESSAGES.DATABASE.POST.DELETE_FAILED,
+        error,
       );
     }
-
-    return await this.prisma.microPost.delete({
-      where: {
-        id: parseInt(id, 10),
-      },
-    });
   }
 }

@@ -5,9 +5,17 @@ import { PrismaService } from '../prisma/prisma.service';
 import {
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { sendResetPasswordEmail } from 'src/nodemailer/sendResetPasswordEmail';
+import {
+  AuthenticationException,
+  DatabaseException,
+  ExternalServiceException,
+  ValidationException,
+} from 'src/common/exceptions/app.exception';
+import { ERROR_MESSAGES } from 'src/common/constants/error-messages';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +34,9 @@ export class AuthService {
       !user ||
       user.hash !== crypto.createHash('md5').update(password).digest('hex')
     ) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new AuthenticationException(
+        ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS,
+      );
     }
 
     const otp = this.generateOtp();
@@ -37,7 +47,15 @@ export class AuthService {
       data: { otp, otp_expire_at },
     });
 
-    await sendOTPEmail(email, otp);
+    try {
+      await sendOTPEmail(email, otp);
+    } catch (error) {
+      await this.prisma.user.update({
+        where: { email },
+        data: { otp: null, otp_expire_at: null },
+      });
+      throw new ExternalServiceException(ERROR_MESSAGES.AUTH.EMAIL_SEND_FAILED);
+    }
 
     return { user_id: user.id, require_otp: true };
   }
@@ -46,17 +64,25 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { id: user_id } });
 
     if (!user || !user.otp_expire_at) {
-      throw new UnauthorizedException();
+      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
     }
 
-    if (user.otp !== otp || user.otp_expire_at < new Date()) {
-      throw new UnauthorizedException('Invalid or expired OTP');
+    if (user.otp !== otp) {
+      throw new ValidationException(ERROR_MESSAGES.AUTH.INVALID_OTP);
     }
 
-    await this.prisma.user.update({
-      where: { id: user_id },
-      data: { otp: null, otp_expire_at: null },
-    });
+    if (user.otp_expire_at < new Date()) {
+      throw new ValidationException(ERROR_MESSAGES.AUTH.OTP_EXPIRED);
+    }
+
+    try {
+      await this.prisma.user.update({
+        where: { id: user_id },
+        data: { otp: null, otp_expire_at: null },
+      });
+    } catch (error) {
+      throw new DatabaseException(ERROR_MESSAGES.DATABASE.USER.UPDATE_FAILED);
+    }
 
     const ret = {
       token: '',
@@ -74,6 +100,10 @@ export class AuthService {
         user_id: user.id,
       },
     });
+
+    if (!auth) {
+      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
+    }
 
     if (auth) {
       const updated = await this.prisma.auth.update({
@@ -107,7 +137,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
     }
 
     const expire_at = new Date(Date.now() + 1000 * 60 * 10);
@@ -121,26 +151,47 @@ export class AuthService {
 
     const token = this.jwtService.sign(jwtPayload);
 
-    await this.prisma.passwordReset.deleteMany({
-      where: { user_id: user.id },
-    });
+    try {
+      await this.prisma.passwordReset.deleteMany({
+        where: { user_id: user.id },
+      });
+    } catch (error) {
+      throw new DatabaseException(
+        ERROR_MESSAGES.DATABASE.PASSWORD.DELETE_FAILED,
+      );
+    }
 
-    await this.prisma.passwordReset.create({
-      data: {
-        user_id: user.id,
-        token: token,
-        expire_at: expire_at,
-      },
-    });
+    try {
+      await this.prisma.passwordReset.create({
+        data: {
+          user_id: user.id,
+          token: token,
+          expire_at: expire_at,
+        },
+      });
+    } catch (error) {
+      throw new DatabaseException(
+        ERROR_MESSAGES.DATABASE.PASSWORD.CREATION_FAILED,
+      );
+    }
 
-    await sendResetPasswordEmail(email, token);
+    try {
+      await sendResetPasswordEmail(email, token);
+    } catch (error) {
+      await this.prisma.passwordReset.deleteMany({
+        where: { user_id: user.id },
+      });
+      throw new ExternalServiceException(
+        ERROR_MESSAGES.AUTH.RESET_EMAIL_SEND_FAILED,
+      );
+    }
   }
 
   async resetPassword(token: string, password: string) {
     const payload = this.jwtService.verify(token);
 
     if (payload.type !== 'password_reset') {
-      throw new ForbiddenException('Invalid token type');
+      throw new ValidationException(ERROR_MESSAGES.AUTH.INVALID_TOKEN_TYPE);
     }
 
     const record = await this.prisma.passwordReset.findUnique({
@@ -148,19 +199,29 @@ export class AuthService {
     });
 
     if (!record || record.expire_at < new Date()) {
-      throw new ForbiddenException('Invalid or expired reset token');
+      throw new ValidationException(ERROR_MESSAGES.AUTH.INVALID_TOKEN);
     }
 
     const hash = crypto.createHash('md5').update(password).digest('hex');
 
-    await this.prisma.user.update({
-      where: { id: record.user_id },
-      data: { hash: hash },
-    });
+    try {
+      await this.prisma.user.update({
+        where: { id: record.user_id },
+        data: { hash: hash },
+      });
+    } catch (error) {
+      throw new DatabaseException(ERROR_MESSAGES.DATABASE.USER.UPDATE_FAILED);
+    }
 
-    await this.prisma.passwordReset.delete({
-      where: { token: token },
-    });
+    try {
+      await this.prisma.passwordReset.delete({
+        where: { token: token },
+      });
+    } catch (error) {
+      throw new DatabaseException(
+        ERROR_MESSAGES.DATABASE.PASSWORD.DELETE_FAILED,
+      );
+    }
 
     return { message: 'Password reset successfully' };
   }

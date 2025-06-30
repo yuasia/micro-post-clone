@@ -9,12 +9,17 @@ export async function sendOTPEmail(to: string, otp: string) {
     },
   });
 
-  const info = await transporter.sendMail({
-    from: `"MicroPost" <${process.env.SMTP_USER}>`,
-    to: to,
-    subject: '【MicroPost】Your OTP Code',
-    text: `Your one time password is: ${otp}. It is valid for 5 minutes.`,
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: `"MicroPost" <${process.env.SMTP_USER}>`,
+      to: to,
+      subject: '【MicroPost】Your OTP Code',
+      text: `Your one time password is: ${otp}. It is valid for 5 minutes.`,
+    });
 
-  console.log('Message sent: %s', info.messageId);
+    console.log('OTP email sent successfully: %s', info.messageId);
+  } catch (error) {
+    console.error('Failed to send OTP email:', error);
+    throw new Error(`OTP email sending failed: ${error.message}`);
+  }
 }
