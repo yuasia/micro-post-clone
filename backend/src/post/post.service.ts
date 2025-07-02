@@ -4,26 +4,18 @@ import {
   AuthenticationException,
   DatabaseException,
 } from 'src/common/exceptions/app.exception';
+import { AuthHelperService } from 'src/common/services/auth-helper.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly authHelper: AuthHelperService,
+  ) {}
 
   async createPost(message: string, token: string) {
-    const now = new Date();
-    const auth = await this.prisma.auth.findFirst({
-      where: {
-        token: token,
-        expire_at: {
-          gte: now,
-        },
-      },
-    });
-
-    if (!auth) {
-      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
-    }
+    const auth = await this.authHelper.validateTokenAndAuth(token);
 
     const record = {
       user_id: auth.user_id,
@@ -41,20 +33,7 @@ export class PostService {
   }
 
   async getList(token: string, start: number, nr_records: number) {
-    const now = new Date();
-
-    const auth = await this.prisma.auth.findFirst({
-      where: {
-        token: token,
-        expire_at: {
-          gte: now,
-        },
-      },
-    });
-
-    if (!auth) {
-      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
-    }
+    const auth = await this.authHelper.validateTokenAndAuth(token);
 
     try {
       const qb = await this.prisma.microPost.findMany({
@@ -90,20 +69,7 @@ export class PostService {
   }
 
   async getSearchList(token: string, search: string) {
-    const now = new Date();
-
-    const auth = await this.prisma.auth.findUnique({
-      where: {
-        token: token,
-        expire_at: {
-          gte: now,
-        },
-      },
-    });
-
-    if (!auth) {
-      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
-    }
+    const auth = await this.authHelper.validateTokenAndAuth(token);
 
     try {
       const qb = await this.prisma.microPost.findMany({
@@ -143,20 +109,7 @@ export class PostService {
   }
 
   async getPostCount(token: string) {
-    const now = new Date();
-
-    const auth = await this.prisma.auth.findUnique({
-      where: {
-        token: token,
-        expire_at: {
-          gte: now,
-        },
-      },
-    });
-
-    if (!auth) {
-      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
-    }
+    const auth = await this.authHelper.validateTokenAndAuth(token);
 
     const count = await this.prisma.microPost.count();
 
@@ -164,20 +117,7 @@ export class PostService {
   }
 
   async deletePost(id: string, token: string) {
-    const now = new Date();
-
-    const auth = await this.prisma.auth.findUnique({
-      where: {
-        token: token,
-        expire_at: {
-          gte: now,
-        },
-      },
-    });
-
-    if (!auth) {
-      throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
-    }
+    const auth = await this.authHelper.validateTokenAndAuth(token);
 
     try {
       return await this.prisma.microPost.delete({

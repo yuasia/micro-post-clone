@@ -2,12 +2,7 @@ import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { sendOTPEmail } from '../nodemailer/sendOTPEmail';
 import { PrismaService } from '../prisma/prisma.service';
-import {
-  ForbiddenException,
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { sendResetPasswordEmail } from 'src/nodemailer/sendResetPasswordEmail';
 import {
   AuthenticationException,
