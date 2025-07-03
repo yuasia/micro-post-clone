@@ -22,7 +22,6 @@ const ResetPassword = () => {
       alert("パスワードが再設定されました。ログインしてください。");
       navigate("/");
     } catch (error: any) {
-      console.log(error);
       alert(
         `エラーが発生しました: ${
           error.response?.data?.message || error.message

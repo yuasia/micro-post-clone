@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_CONFIG, API_ENDPOINTS } from "../config/api.config";
 
 export const login = async (email: string, password: string) => {
-  const url = "http://localhost:3001/auth/login";
+  const url = `${API_CONFIG.BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`;
   const res = await axios.post(url, {
     email,
     password,
@@ -10,7 +11,7 @@ export const login = async (email: string, password: string) => {
 };
 
 export const verifyOTP = async (user_id: number, otp: string) => {
-  const url = "http://localhost:3001/auth/verify-otp";
+  const url = `${API_CONFIG.BASE_URL}${API_ENDPOINTS.AUTH.VERIFY_OTP}`;
   const res = await axios.post(url, {
     user_id,
     otp,
@@ -19,7 +20,7 @@ export const verifyOTP = async (user_id: number, otp: string) => {
 };
 
 export const requestPasswordReset = async (email: string) => {
-  const url = "http://localhost:3001/auth/request-reset";
+  const url = `${API_CONFIG.BASE_URL}${API_ENDPOINTS.AUTH.REQUEST_RESET}`;
   const res = await axios.post(url, {
     email,
   });
@@ -27,7 +28,7 @@ export const requestPasswordReset = async (email: string) => {
 };
 
 export const resetPassword = async (token: string, password: string) => {
-  const url = "http://localhost:3001/auth/reset-password";
+  const url = `${API_CONFIG.BASE_URL}${API_ENDPOINTS.AUTH.RESET_PASSWORD}`;
   const res = await axios.post(url, {
     token,
     password,

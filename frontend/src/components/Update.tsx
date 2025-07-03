@@ -1,7 +1,6 @@
-import axios from "axios";
 import { X } from "lucide-react";
 import styled from "styled-components";
-import { deleteUser } from "../api/User";
+import { deleteUser, updateUser } from "../api/User";
 import UploadWidget from "./UploadWidget";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -39,7 +38,7 @@ const Update = () => {
     }
 
     try {
-      await axios.post("http://localhost:3001/user/update", payload);
+      await updateUser(payload);
       alert("ユーザー情報を更新しました");
 
       const updated = { ...userInfo };
@@ -57,7 +56,6 @@ const Update = () => {
       }
       setUserInfo(updated);
 
-      // 成功したらフィールドをクリア
       if (newPassword) {
         setNewPassword("");
         setCurrentPassword("");
@@ -78,6 +76,7 @@ const Update = () => {
   const handleDeleteAccount = async () => {
     if (!deletePassword) {
       alert("パスワードを入力してください");
+      return;
     }
 
     try {
