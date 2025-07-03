@@ -23,10 +23,7 @@ export async function sendResetPasswordEmail(to: string, token: string) {
         <p>このリンクは10分以内に有効です。</p>
       `,
     });
-
-    console.log('Password reset email sent successfully: %s', info.messageId);
   } catch (error) {
-    console.error('Failed to send password reset email:', error);
     throw new Error(
       `パスワードリセットメールの送信に失敗しました: ${error.message}`,
     );

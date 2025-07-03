@@ -11,6 +11,8 @@ import {
   ValidationException,
 } from 'src/common/exceptions/app.exception';
 import { ERROR_MESSAGES } from 'src/common/constants/error-messages';
+import { AuthAPI } from 'src/types/api.types';
+import { ResponseHelper } from 'src/common/services/response-helper.service';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +25,7 @@ export class AuthService {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<AuthAPI.LoginResponse> {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (
       !user ||
@@ -52,10 +54,16 @@ export class AuthService {
       throw new ExternalServiceException(ERROR_MESSAGES.AUTH.EMAIL_SEND_FAILED);
     }
 
-    return { user_id: user.id, require_otp: true };
+    return ResponseHelper.success({
+      user_id: user.id,
+      require_otp: true,
+    }) as AuthAPI.LoginResponse;
   }
 
-  async verifyOTP(user_id: number, otp: string) {
+  async verifyOTP(
+    user_id: number,
+    otp: string,
+  ): Promise<AuthAPI.VerifyOTPResponse> {
     const user = await this.prisma.user.findUnique({ where: { id: user_id } });
 
     if (!user || !user.otp_expire_at) {
@@ -125,7 +133,7 @@ export class AuthService {
       ret.token = created.token;
     }
 
-    return ret;
+    return ResponseHelper.success(ret) as AuthAPI.VerifyOTPResponse;
   }
 
   async requestReset(email: string) {
@@ -173,12 +181,15 @@ export class AuthService {
     try {
       await sendResetPasswordEmail(email, token);
     } catch (error) {
-      await this.prisma.passwordReset.deleteMany({
-        where: { user_id: user.id },
-      });
-      throw new ExternalServiceException(
-        ERROR_MESSAGES.AUTH.RESET_EMAIL_SEND_FAILED,
-      );
+      try {
+        await this.prisma.passwordReset.deleteMany({
+          where: { user_id: user.id },
+        });
+      } catch (error) {
+        throw new DatabaseException(
+          ERROR_MESSAGES.DATABASE.PASSWORD.DELETE_FAILED,
+        );
+      }
     }
   }
 
@@ -199,25 +210,23 @@ export class AuthService {
 
     const hash = crypto.createHash('md5').update(password).digest('hex');
 
-    try {
-      await this.prisma.user.update({
-        where: { id: record.user_id },
-        data: { hash: hash },
-      });
-    } catch (error) {
-      throw new DatabaseException(ERROR_MESSAGES.DATABASE.USER.UPDATE_FAILED);
-    }
+    return await this.prisma.$transaction(async (prisma) => {
+      try {
+        await prisma.user.update({
+          where: { id: record.user_id },
+          data: { hash: hash },
+        });
 
-    try {
-      await this.prisma.passwordReset.delete({
-        where: { token: token },
-      });
-    } catch (error) {
-      throw new DatabaseException(
-        ERROR_MESSAGES.DATABASE.PASSWORD.DELETE_FAILED,
-      );
-    }
+        await prisma.passwordReset.delete({
+          where: { token: token },
+        });
 
-    return { message: 'Password reset successfully' };
+        return ResponseHelper.success({
+          user_id: record.user_id,
+        });
+      } catch (error) {
+        throw new DatabaseException(ERROR_MESSAGES.DATABASE.USER.UPDATE_FAILED);
+      }
+    });
   }
 }

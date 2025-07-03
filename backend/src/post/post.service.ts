@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ERROR_MESSAGES } from 'src/common/constants/error-messages';
-import {
-  AuthenticationException,
-  DatabaseException,
-} from 'src/common/exceptions/app.exception';
+import { DatabaseException } from 'src/common/exceptions/app.exception';
 import { AuthHelperService } from 'src/common/services/auth-helper.service';
+import { ResponseHelper } from 'src/common/services/response-helper.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PostAPI } from 'src/types/api.types';
 
 @Injectable()
 export class PostService {
@@ -23,7 +22,7 @@ export class PostService {
     };
 
     try {
-      await this.prisma.microPost.create({ data: record });
+      const res = await this.prisma.microPost.create({ data: record });
     } catch (error) {
       throw new DatabaseException(
         ERROR_MESSAGES.DATABASE.POST.CREATION_FAILED,
@@ -32,7 +31,11 @@ export class PostService {
     }
   }
 
-  async getList(token: string, start: number, nr_records: number) {
+  async getList(
+    token: string,
+    start: number,
+    nr_records: number,
+  ): Promise<PostAPI.GetListResponse> {
     const auth = await this.authHelper.validateTokenAndAuth(token);
 
     try {
@@ -52,14 +55,16 @@ export class PostService {
         },
       });
 
-      return qb.map((post) => ({
-        id: post.id,
-        user_id: post.user_id,
-        content: post.content,
-        user_name: post.user.name,
-        avatar_url: post.user.avatar_url,
-        created_at: post.created_at,
-      }));
+      return ResponseHelper.success(
+        qb.map((post) => ({
+          id: post.id,
+          user_id: post.user_id,
+          content: post.content,
+          user_name: post.user.name,
+          avatar_url: post.user.avatar_url,
+          created_at: post.created_at,
+        })),
+      ) as PostAPI.GetListResponse;
     } catch (error) {
       throw new DatabaseException(
         ERROR_MESSAGES.DATABASE.POST.FETCH_FAILED,
@@ -68,7 +73,10 @@ export class PostService {
     }
   }
 
-  async getSearchList(token: string, search: string) {
+  async getSearchList(
+    token: string,
+    search: string,
+  ): Promise<PostAPI.GetListResponse> {
     const auth = await this.authHelper.validateTokenAndAuth(token);
 
     try {
@@ -92,14 +100,16 @@ export class PostService {
         },
       });
 
-      return qb.map((post) => ({
-        id: post.id,
-        user_id: post.user_id,
-        content: post.content,
-        user_name: post.user.name,
-        avatar_url: post.user.avatar_url,
-        created_at: post.created_at,
-      }));
+      return ResponseHelper.success(
+        qb.map((post) => ({
+          id: post.id,
+          user_id: post.user_id,
+          content: post.content,
+          user_name: post.user.name,
+          avatar_url: post.user.avatar_url,
+          created_at: post.created_at,
+        })),
+      ) as PostAPI.GetListResponse;
     } catch (error) {
       throw new DatabaseException(
         ERROR_MESSAGES.DATABASE.POST.FETCH_FAILED,
@@ -108,7 +118,7 @@ export class PostService {
     }
   }
 
-  async getPostCount(token: string) {
+  async getPostCount(token: string): Promise<number> {
     const auth = await this.authHelper.validateTokenAndAuth(token);
 
     const count = await this.prisma.microPost.count();
@@ -116,15 +126,19 @@ export class PostService {
     return count;
   }
 
-  async deletePost(id: string, token: string) {
+  async deletePost(id: string, token: string): Promise<PostAPI.DeleteResponse> {
     const auth = await this.authHelper.validateTokenAndAuth(token);
 
     try {
-      return await this.prisma.microPost.delete({
+      const res = await this.prisma.microPost.delete({
         where: {
           id: parseInt(id, 10),
         },
       });
+
+      return ResponseHelper.success({
+        id: res.id,
+      }) as PostAPI.DeleteResponse;
     } catch (error) {
       throw new DatabaseException(
         ERROR_MESSAGES.DATABASE.POST.DELETE_FAILED,

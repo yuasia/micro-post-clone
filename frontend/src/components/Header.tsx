@@ -28,7 +28,7 @@ const Header = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       const user = await getUser(userInfo.id, userInfo.token);
-      setAvatarUrl(user.avatar_url);
+      setAvatarUrl(user.data.avatar_url);
     };
 
     fetchUserInfo();
@@ -56,8 +56,8 @@ const Header = () => {
     }
 
     let postList: Array<PostType> = [];
-    if (posts) {
-      posts.forEach((post: PostType) => {
+    if (posts.success) {
+      posts.data.forEach((post: PostType) => {
         postList.push({
           id: post.id,
           user_id: post.user_id,
@@ -90,9 +90,9 @@ const Header = () => {
   useEffect(() => {
     const myGetUser = async () => {
       const user = await getUser(userInfo.id, userInfo.token);
-      setUserName(user.name);
-      setUserEmail(user.email);
-      setUpdateDate(new Date(user.updated_at).toISOString().split("T")[0]);
+      setUserName(user.data.name);
+      setUserEmail(user.data.email);
+      setUpdateDate(new Date(user.data.updated_at).toISOString().split("T")[0]);
     };
 
     myGetUser();

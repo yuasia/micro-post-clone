@@ -43,19 +43,20 @@ const VerifyOTP = () => {
       if (userId && otpString.length === 6) {
         const res = await verifyOTP(parseInt(userId, 10), otpString);
 
-        if (res && res.token) {
-          localStorage.setItem("token", res.token);
-          localStorage.setItem("user_id", res.user_id);
-          localStorage.setItem("user_name", res.user_name);
-          localStorage.setItem("user_email", res.user_email);
-          localStorage.setItem("user_avatar", res.avatar_url);
+        if (res.success) {
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("user_id", res.data.user_id);
+          localStorage.setItem("user_name", res.data.user_name);
+          localStorage.setItem("user_email", res.data.user_email);
+          localStorage.setItem("user_avatar", res.data.avatar_url);
           localStorage.removeItem("temp_user_id");
 
           setUserInfo({
             ...userInfo,
-            id: res.user_id,
-            token: res.token,
+            id: res.data.user_id,
+            token: res.data.token,
           });
+          console.log("UserInfo: ", userInfo);
           navigate("/main");
         }
       }

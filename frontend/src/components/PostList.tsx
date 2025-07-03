@@ -10,7 +10,6 @@ const PostList = () => {
   const [totalPosts, setTotalPosts] = useState(0);
 
   const postsPerPage = 10;
-
   const { userInfo } = useContext(UserContext);
   const { page, setPage } = useContext(PageContext);
   const { postList, setPostList } = useContext(PostListContext);
@@ -23,7 +22,7 @@ const PostList = () => {
 
     let postList: Array<PostType> = [];
     if (posts) {
-      posts.forEach((post: PostType) => {
+      posts.data.forEach((post: PostType) => {
         postList.push({
           id: post.id,
           user_id: post.user_id,

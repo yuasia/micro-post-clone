@@ -17,13 +17,11 @@ const SignIn = () => {
       setIsLoading(true);
       const ret = await login(email, pass);
 
-      if (ret.data.require_otp) {
+      if (ret.success) {
         localStorage.setItem("temp_user_id", ret.data.user_id);
         navigate("/verify_otp");
       }
     } catch (error) {
-      console.error("Login failed: ", error);
-
       if (axios.isAxiosError(error)) {
         const errorMsg =
           error.response?.data?.message || "ログインに失敗しました";

@@ -17,11 +17,9 @@ const SideBar = () => {
   const getPostList = async () => {
     const start = (page - 1) * postsPerPage;
     const posts = await getList(userInfo.token, start, postsPerPage);
-    console.log(posts);
     let postList: Array<PostType> = [];
     if (posts) {
-      console.log(posts);
-      posts.forEach((post: any) => {
+      posts.data.forEach((post: any) => {
         postList.push({
           id: post.id,
           user_id: post.user_id,

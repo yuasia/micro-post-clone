@@ -11,6 +11,8 @@ import {
 import { ERROR_MESSAGES } from 'src/common/constants/error-messages';
 import { AuthHelperService } from 'src/common/services/auth-helper.service';
 import { USER_CONSTRAINTS } from 'src/common/constants/user.constants';
+import { UserAPI } from 'src/types/api.types';
+import { ResponseHelper } from 'src/common/services/response-helper.service';
 
 interface UserUpdateData {
   updated_at: Date;
@@ -118,20 +120,22 @@ export class UserService {
     }
   }
 
-  private async executeUserUpdate(userId: number, updateData: UserUpdateData) {
+  private async executeUserUpdate(
+    userId: number,
+    updateData: UserUpdateData,
+  ): Promise<UserAPI.UpdateResponse> {
     try {
       const updated = await this.prisma.user.update({
         where: { id: userId },
         data: updateData,
       });
 
-      return {
-        user: {
-          id: updated.id,
-          name: updated.name,
-          email: updated.email,
-        },
-      };
+      return ResponseHelper.success({
+        id: updated.id,
+        name: updated.name,
+        email: updated.email,
+        updated_at: updated.updated_at,
+      }) as UserAPI.UpdateResponse;
     } catch (error) {
       throw new DatabaseException(
         ERROR_MESSAGES.DATABASE.USER.UPDATE_FAILED,
@@ -140,7 +144,11 @@ export class UserService {
     }
   }
 
-  async createUser(name: string, email: string, password: string) {
+  async createUser(
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<UserAPI.CreateResponse> {
     const existingUser = await this.prisma.user.findUnique({
       where: {
         email: email,
@@ -168,14 +176,12 @@ export class UserService {
         data: record,
       });
 
-      return {
-        success: true,
-        message: 'user is created',
-        user: {
-          id: user.id,
-          name: user.name,
-        },
-      };
+      return ResponseHelper.success({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        created_at: user.created_at,
+      }) as UserAPI.CreateResponse;
     } catch (error) {
       throw new DatabaseException(
         ERROR_MESSAGES.DATABASE.USER.CREATION_FAILED,
@@ -184,7 +190,7 @@ export class UserService {
     }
   }
 
-  async getUser(token: string, id: number) {
+  async getUser(token: string, id: number): Promise<UserAPI.GetUserResponse> {
     const auth = await this.authHelper.validateTokenAndAuth(token);
 
     const user = await this.prisma.user.findUnique({
@@ -197,7 +203,7 @@ export class UserService {
       throw new AuthenticationException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
     }
 
-    return user;
+    return ResponseHelper.success(user) as UserAPI.GetUserResponse;
   }
 
   async updateUser(token: string, dto: UpdateUserDto) {
@@ -218,7 +224,10 @@ export class UserService {
     return await this.executeUserUpdate(auth.user_id, updateData);
   }
 
-  async deleteUser(token: string, password: string) {
+  async deleteUser(
+    token: string,
+    password: string,
+  ): Promise<UserAPI.DeleteResponse> {
     const auth = await this.authHelper.validateTokenAndAuth(token);
 
     const user = await this.prisma.user.findFirst({
@@ -256,10 +265,10 @@ export class UserService {
           where: { user_id: user.id },
         });
 
-        return {
-          success: true,
-          message: 'user and all related data deleted successfully',
-        };
+        return ResponseHelper.success({
+          id: user.id,
+          name: user.name,
+        }) as UserAPI.DeleteResponse;
       } catch (error) {
         throw new DatabaseException(
           ERROR_MESSAGES.DATABASE.USER.DELETE_FAILED,
